@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.3.2.RELEASE</version>
+        <relativePath/>
+    </parent>
+
+    <groupId>com.lincheng.study</groupId>
+    <artifactId>lincheng-study</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+
+    <name>lincheng-study</name>
+    <description>学习项目</description>
+    <packaging>pom</packaging>
+
+    <modules>
+        <module>study-common</module>
+        <module>study-redis</module>
+    </modules>
+
+    <properties>
+        <java.version>1.8</java.version>
+        <!--
+            spring boot，spring cloud，spring cloud alibaba
+            版本选择：https://github.com/alibaba/spring-cloud-alibaba/wiki/%E7%89%88%E6%9C%AC%E8%AF%B4%E6%98%8E
+        -->
+        <spring.cloud.version>Hoxton.SR9</spring.cloud.version>
+        <spring.cloud.alibaba.version>2.2.6.RELEASE</spring.cloud.alibaba.version>
+        <spring.boot.version>2.3.2.RELEASE</spring.boot.version>
+
+        <!--
+            springboot集成中间件时版本选择
+            第一步 ：点开 <parent> 中的 <artifactId>spring-boot-starter-parent</artifactId>
+            第二步 ：点开 <parent> 中的 <artifactId>spring-boot-dependencies</artifactId>
+            第三步 ：找到 <properties></properties> 中对应的中间件版本即可
+        -->
+        <commons-lang3.version>3.10</commons-lang3.version>
+        <lombok.version>1.18.12</lombok.version>
+
+    </properties>
+
+
+    <dependencies>
+        <!--Spring Boot的核心启动器，包含了自动配置、日志和YAML-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter</artifactId>
+           <!-- <version>${spring.boot.version}</version>-->
+        </dependency>
+
+        <!--支持全栈式Web开发，包含Tomcat、restful、springMVC的web应用程序的 starter-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+            <version>${spring.boot.version}</version>
+        </dependency>
+
+        <!--redis-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-redis</artifactId>
+            <version>${spring.boot.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <version>${spring.boot.version}</version>
+        </dependency>
+
+
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
+            <version>${spring.cloud.alibaba.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
+            <version>${spring.cloud.alibaba.version}</version>
+        </dependency>
+
+        <!--
+            redisson
+            版本选择：https://github.com/redisson/redisson/tree/master/redisson-spring-boot-starter
+            redisson-spring-boot-starter 依赖的spring boot版本 要与 本项目依赖的版本 要是同一个版本。
+            说明如果是redisson-spring-data-23 的话对应的springboot版本就是2.3.x的版本
+        -->
+        <dependency>
+            <groupId>org.redisson</groupId>
+            <artifactId>redisson-spring-boot-starter</artifactId>
+            <version>3.14.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>${commons-lang3.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>${lombok.version}</version>
+        </dependency>
+
+
+    </dependencies>
+
+
+</project>
