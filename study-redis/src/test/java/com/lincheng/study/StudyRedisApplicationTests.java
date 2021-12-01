@@ -1,5 +1,6 @@
 package com.lincheng.study;
 
+import com.lincheng.study.utils.RedisUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -11,7 +12,8 @@ public class StudyRedisApplicationTests {
 
     @Test
     public void contextLoads() {
-        System.out.println(1);
+        Object age = RedisUtils.get("age");
+        System.out.println(age);
     }
 
 }
