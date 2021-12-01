@@ -31,14 +31,13 @@ public class RedissonUtils {
     }
 
 
-
-    public static Object getString(String key){
+    public static Object getString(String key) {
         RBucket<Object> bucket = redissonClient.getBucket(key, StringCodec.INSTANCE);
         return bucket.get();
     }
 
 
-    public static void setString(String key, Object value, Long time){
+    public static void setString(String key, Object value, Long time) {
         RBucket<Object> bucket = redissonClient.getBucket(key, StringCodec.INSTANCE);
         bucket.set(value, time, TimeUnit.SECONDS);
     }
@@ -62,16 +61,16 @@ public class RedissonUtils {
     }
 
 
-    public static void setHash(String key, HashMap<Object,Object> value) {
-        if (MapUtils.isNotEmpty(value)){
+    public static void setHash(String key, HashMap<Object, Object> value) {
+        if (MapUtils.isNotEmpty(value)) {
             RMap<Object, Object> map = redissonClient.getMap(key);
             value.forEach(map::put);
         }
     }
 
 
-    public static void setHash(String key, HashMap<Object,Object> value, Long time) {
-        if (MapUtils.isNotEmpty(value)){
+    public static void setHash(String key, HashMap<Object, Object> value, Long time) {
+        if (MapUtils.isNotEmpty(value)) {
             RMap<Object, Object> map = redissonClient.getMap(key);
             value.forEach(map::put);
             map.expire(time, TimeUnit.SECONDS);

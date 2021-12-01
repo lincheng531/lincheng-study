@@ -16,15 +16,15 @@ import java.io.IOException;
  **/
 public class JsonUtils {
 
-    
+
     /**
+     * @throws JsonProcessingException
      * @Description: 将对象的大写转换为下划线加小写。
-     *                  例如：userName-->user_name
-     * @author: linCheng 
+     * 例如：userName-->user_name
+     * @author: linCheng
      * @Date: 2021/10/8 21:38
      * @param: object
      * @Return: java.lang.String
-     * @throws JsonProcessingException
      */
     public static String toUnderlineJSONString(Object object) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
@@ -35,14 +35,14 @@ public class JsonUtils {
 
 
     /**
+     * @throws IOException
      * @Description: 将下划线转换为驼峰的形式。
-     *                  例如：user_name-->userName
+     * 例如：user_name-->userName
      * @author: linCheng
      * @Date: 2021/10/8 21:40
      * @param: json
      * @param: clazz
      * @Return: T
-     * @throws IOException
      */
     public static <T> T toSnakeObject(String json, Class<T> clazz) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
@@ -59,7 +59,7 @@ public class JsonUtils {
      * @Return: java.lang.String
      */
     public static String CapitalizeFirstLetterToJSONString(Object object) {
-       return JSON.toJSONString(object,new PascalNameFilter());
+        return JSON.toJSONString(object, new PascalNameFilter());
     }
 
 }

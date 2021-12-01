@@ -6,8 +6,8 @@ import org.springframework.beans.BeanWrapperImpl;
 import java.util.*;
 
 /**
- * @description: Bean工具类
  * @author lincheng5
+ * @description: Bean工具类
  * @date 2021/7/28 23:52
  */
 public final class BeanUtils {
@@ -27,7 +27,7 @@ public final class BeanUtils {
         return emptyNames.toArray(result);
     }
 
-    public static void copyPropertiesIgnoreNull(Object source , Object target){
+    public static void copyPropertiesIgnoreNull(Object source, Object target) {
         /* 1.源对象与目标对象都不能为空 */
         if (target == null || source == null) {
             return;

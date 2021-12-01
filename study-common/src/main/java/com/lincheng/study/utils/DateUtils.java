@@ -28,7 +28,7 @@ public class DateUtils {
 
     /**
      * @Description: Date To String
-     *               pattern 默认 "yyyy-MM-dd HH:mm:ss"
+     * pattern 默认 "yyyy-MM-dd HH:mm:ss"
      * @author: linCheng
      * @Date: 2021/11/5 10:18
      * @param: date
@@ -44,9 +44,9 @@ public class DateUtils {
     /**
      * @Description Date To String
      * @author linCheng
+     * @param: date
+     * @param: pattern
      * @Date 2021/10/8 20:39
-     * @param date
-     * @param pattern
      * @Return java.lang.String
      */
     public static String dateToString(Date date, String pattern) {
@@ -113,7 +113,7 @@ public class DateUtils {
 
 
     /**
-     * @Description:  Date to LocalTime
+     * @Description: Date to LocalTime
      * @author: linCheng
      * @Date: 2021/10/8 20:41
      * @param: date
@@ -175,9 +175,9 @@ public class DateUtils {
      * @param: timestamp
      * @Return: java.time.LocalDateTime
      */
-    public static LocalDateTime timestampToLocalDateTime(Timestamp timestamp){
+    public static LocalDateTime timestampToLocalDateTime(Timestamp timestamp) {
         long time = timestamp.getTime();
-        return LocalDateTime.ofEpochSecond(time/1000,0,ZoneOffset.ofHours(8));
+        return LocalDateTime.ofEpochSecond(time / 1000, 0, ZoneOffset.ofHours(8));
     }
 
 
@@ -189,7 +189,7 @@ public class DateUtils {
      * @param: pattern
      * @Return: java.lang.String
      */
-    public static String timestampToString(Timestamp timestamp){
+    public static String timestampToString(Timestamp timestamp) {
         return localDateTimeToString(timestampToLocalDateTime(timestamp), YYYYMMDDHHMMSS);
     }
 
@@ -202,7 +202,7 @@ public class DateUtils {
      * @param: pattern
      * @Return: java.lang.String
      */
-    public static String timestampToString(Timestamp timestamp, String pattern){
+    public static String timestampToString(Timestamp timestamp, String pattern) {
         return localDateTimeToString(timestampToLocalDateTime(timestamp), pattern);
     }
 
@@ -214,8 +214,8 @@ public class DateUtils {
      * @param: date
      * @Return: java.sql.Timestamp
      */
-    public static Timestamp stringToTimestamp(String date){
-        return dateToTimestamp(stringToDate(date,YYYYMMDDHHMMSS));
+    public static Timestamp stringToTimestamp(String date) {
+        return dateToTimestamp(stringToDate(date, YYYYMMDDHHMMSS));
     }
 
 
@@ -227,8 +227,8 @@ public class DateUtils {
      * @param: pattern
      * @Return: java.sql.Timestamp
      */
-    public static Timestamp stringToTimestamp(String date, String pattern){
-       return dateToTimestamp(stringToDate(date,pattern));
+    public static Timestamp stringToTimestamp(String date, String pattern) {
+        return dateToTimestamp(stringToDate(date, pattern));
     }
 
 
@@ -239,8 +239,8 @@ public class DateUtils {
      * @param: localDateTime
      * @Return: java.lang.String
      */
-    public static String localDateTimeToString(LocalDateTime localDateTime){
-        if(null == localDateTime){
+    public static String localDateTimeToString(LocalDateTime localDateTime) {
+        if (null == localDateTime) {
             localDateTime = LocalDateTime.now();
         }
         return DateTimeFormatter.ofPattern(YYYYMMDDHHMMSS).format(localDateTime);
@@ -255,8 +255,8 @@ public class DateUtils {
      * @param: pattern
      * @Return: java.lang.String
      */
-    public static String localDateTimeToString(LocalDateTime localDateTime, String pattern){
-        if(null == localDateTime){
+    public static String localDateTimeToString(LocalDateTime localDateTime, String pattern) {
+        if (null == localDateTime) {
             localDateTime = LocalDateTime.now();
         }
         return DateTimeFormatter.ofPattern(pattern).format(localDateTime);
@@ -270,8 +270,8 @@ public class DateUtils {
      * @param: date
      * @Return: java.time.LocalDateTime
      */
-    public static LocalDateTime stringToLocalDateTime(String date){
-        return LocalDateTime.parse(date,DateTimeFormatter.ofPattern(YYYYMMDDHHMMSS));
+    public static LocalDateTime stringToLocalDateTime(String date) {
+        return LocalDateTime.parse(date, DateTimeFormatter.ofPattern(YYYYMMDDHHMMSS));
     }
 
 
@@ -283,8 +283,8 @@ public class DateUtils {
      * @param: pattern
      * @Return: java.time.LocalDateTime
      */
-    public static LocalDateTime stringToLocalDateTime(String date,String pattern){
-        return LocalDateTime.parse(date,DateTimeFormatter.ofPattern(pattern));
+    public static LocalDateTime stringToLocalDateTime(String date, String pattern) {
+        return LocalDateTime.parse(date, DateTimeFormatter.ofPattern(pattern));
     }
 
 
@@ -295,8 +295,8 @@ public class DateUtils {
      * @param: date
      * @Return: java.sql.Timestamp
      */
-    public static Timestamp dateToTimestamp(Date date){
-        if(null == date){
+    public static Timestamp dateToTimestamp(Date date) {
+        if (null == date) {
             date = new Date();
         }
         return new Timestamp(date.getTime());
@@ -310,8 +310,8 @@ public class DateUtils {
      * @param: timestamp
      * @Return: java.util.Date
      */
-    public static Date timestampToDate(Timestamp timestamp){
-        if(null == timestamp){
+    public static Date timestampToDate(Timestamp timestamp) {
+        if (null == timestamp) {
             timestamp = new Timestamp(System.currentTimeMillis());
         }
         return new Date(timestamp.getTime());
@@ -325,9 +325,9 @@ public class DateUtils {
      * @param: timestamp
      * @Return: java.time.LocalDate
      */
-    public static LocalDate timestampToLocalDate(Timestamp timestamp){
+    public static LocalDate timestampToLocalDate(Timestamp timestamp) {
         long time = timestamp.getTime();
-        return dateToLocalDate(localDateTimeToDate(LocalDateTime.ofEpochSecond(time/1000,0,ZoneOffset.ofHours(8))));
+        return dateToLocalDate(localDateTimeToDate(LocalDateTime.ofEpochSecond(time / 1000, 0, ZoneOffset.ofHours(8))));
     }
 
 
@@ -338,8 +338,8 @@ public class DateUtils {
      * @param: localDateTime
      * @Return: java.sql.Timestamp
      */
-    public static Timestamp localDateToTimestamp(LocalDateTime localDateTime){
-        if(null == localDateTime){
+    public static Timestamp localDateToTimestamp(LocalDateTime localDateTime) {
+        if (null == localDateTime) {
             localDateTime = LocalDateTime.now();
         }
         return Timestamp.valueOf(localDateTime);
@@ -378,7 +378,7 @@ public class DateUtils {
 
     /**
      * @Description: 获取当前时间之后的某一天的最小时间
-     * @author: linCheng 
+     * @author: linCheng
      * @Date: 2021/10/8 20:47
      * @param: date
      * @param: after
@@ -394,7 +394,7 @@ public class DateUtils {
 
     /**
      * @Description: 获取当前时间之后的某一天的最大时间
-     * @author: linCheng 
+     * @author: linCheng
      * @Date: 2021/10/8 20:48
      * @param: date
      * @param: after
@@ -500,8 +500,6 @@ public class DateUtils {
     }
 
 
-
-
     /**
      * @Description: 传入时间前几个月的1号0点 00:00:00
      * @author: linCheng
@@ -550,7 +548,7 @@ public class DateUtils {
 
 
     /**
-     * @Description:  传入时间的后几个月的时间
+     * @Description: 传入时间的后几个月的时间
      * @author: linCheng
      * @Date: 2021/10/8 20:54
      * @param: date
@@ -611,7 +609,7 @@ public class DateUtils {
 
 
     /**
-     * @Description:  两个日期相差多少小时 double 约等于
+     * @Description: 两个日期相差多少小时 double 约等于
      * @author: linCheng
      * @Date: 2021/10/8 20:51
      * @param: date1
@@ -644,7 +642,7 @@ public class DateUtils {
 
 
     /**
-     * @Description:  当前时间23：59：59
+     * @Description: 当前时间23：59：59
      * @author: linCheng
      * @Date: 2021/10/8 21:21
      * @param: null
@@ -669,8 +667,6 @@ public class DateUtils {
         localDateTime = localDateTime.with(LocalTime.MIN);
         return Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant());
     }
-
-
 
 
 }
