@@ -1,0 +1,13 @@
+server:
+  port: 8082
+
+
+spring:
+  application:
+    #应用名称
+    name: study-cloud-alibaba-consumer
+  cloud:
+    nacos:
+      discovery:
+        #nacos 注册地址
+        server-addr: http://localhost:8848
