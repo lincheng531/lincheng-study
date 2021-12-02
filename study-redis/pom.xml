@@ -12,10 +12,19 @@
 
     <packaging>jar</packaging>
 
-    <artifactId>study-common</artifactId>
+    <artifactId>study-redis</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>study-common</name>
+    <name>study-redis</name>
 
-    <description>公共依赖，bean,工具类</description>
+    <description>学习 redis 相关操作与redis中间件</description>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.lincheng.study</groupId>
+            <artifactId>study-common</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
+
 
 </project>
