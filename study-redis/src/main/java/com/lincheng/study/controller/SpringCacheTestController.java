@@ -1,7 +1,6 @@
 package com.lincheng.study.controller;
 
 import com.lincheng.study.domain.redis.TestRedisVO;
-import com.lincheng.study.service.impl.TestSpringCacheServiceImpl;
 import com.lincheng.study.service.interfaces.ITestSpringCacheService;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
