@@ -1,5 +1,6 @@
 package com.lincheng.study.controller;
 
+import com.lincheng.study.utils.RedisUtils;
 import com.lincheng.study.utils.RedissonUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -12,9 +13,15 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class RedissonTestController {
 
-    @RequestMapping(value = "/testUtil")
-    public Object testUtil() throws Exception{
-        Object age = RedissonUtils.getString("age");
-        return age;
+    @RequestMapping(value = "/testRedissonUtil")
+    public Object testRedissonUtil() throws Exception{
+        return RedissonUtils.getString("age");
     }
+
+    @RequestMapping(value = "/testRedisUtil")
+    public Object testRedisUtil() throws Exception{
+        return RedisUtils.get("age");
+    }
+
+
 }
