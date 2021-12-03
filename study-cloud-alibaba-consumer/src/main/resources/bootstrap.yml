@@ -38,3 +38,28 @@ spring:
           dataId: all.yml
           group: DEFAULT_GROUP
           refresh: true
+
+
+dubbo:
+  application:
+    #dubbo应用名称
+    name: ${spring.application.name}
+    metadata-type: local
+    # qos=Quality of Service 是Dubbo的在线运维命令，可以对服务进行动态的配置、控制(上下线)及查询，
+    #qos-enable: true
+  registry:
+    # 注册中心与注册地址
+    address: spring-cloud://127.0.0.1:8848
+    use-as-config-center: false
+  #Dubbo服务暴露的协议配置
+  protocol:
+    #协议名称
+    name: dubbo
+    # dubbo协议端口(1 表示自增端口,从20880开始)
+    port: -1
+  #dubbo服务扫描基准包
+  #scan:
+    #base-packages: com.lincheng.study.api
+  cloud:
+    #Dubbo 消费端订阅服务端的应用名，多个服务提供者用逗号分隔
+    subscribed-services: study-cloud-alibaba-product

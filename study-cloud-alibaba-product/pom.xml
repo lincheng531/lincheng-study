@@ -18,6 +18,12 @@
 
     <description>学习spring cloud alibaba</description>
 
-
+    <dependencies>
+        <dependency>
+            <groupId>com.lincheng.study</groupId>
+            <artifactId>study-common</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
 
 </project>

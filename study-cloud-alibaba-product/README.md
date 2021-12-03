@@ -97,3 +97,11 @@
    
    - extension-configs:refresh=true时（默认flase），@RestController才能生效
 
+## 三、远程调用（dubbo）
+
+1. 在配置文件中配置dubbo配置信息
+
+```
+
+```
+
