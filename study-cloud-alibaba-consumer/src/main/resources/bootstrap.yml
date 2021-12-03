@@ -13,6 +13,8 @@ spring:
         server-addr: http://localhost:8848
         #注册到哪个命名空间中
         namespace: 3e81c560-3c91-484f-bb67-c1a4e01ce688
+        #不注册到注册中心(默认注册)
+        register-enabled: true
       config:
         #nacos 配置中心地址
         server-addr: http://localhost:8848

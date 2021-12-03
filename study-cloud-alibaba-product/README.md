@@ -16,6 +16,8 @@
            server-addr: http://localhost:8848
            #注册到哪个命名空间中(不填,默认为public)
            namespace: 3e81c560-3c91-484f-bb67-c1a4e01ce688
+           #不注册到注册中心(默认注册)
+           register-enabled: true
    ```
 
 2. 在启动类中，添加注解@EnableDiscoveryClient，开启服务注册与发现功能
