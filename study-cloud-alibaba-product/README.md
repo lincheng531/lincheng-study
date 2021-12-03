@@ -48,6 +48,8 @@
          config:
            #nacos 配置中心地址
            server-addr: http://localhost:8848
+           #是否开启监听和自动刷新
+           refresh-enabled: true
            #告诉从哪个命名空间获取配置(不填,默认为public)
            namespace: f15dc566-c615-4dbe-88f9-0c812ea6e2f6
            #配置文件名称(Data Id)
