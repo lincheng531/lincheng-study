@@ -1,6 +1,6 @@
 package com.lincheng.study.utils;
 
-import com.alibaba.nacos.common.utils.MapUtils;
+import org.apache.commons.collections4.MapUtils;
 import org.redisson.api.*;
 import org.redisson.client.codec.StringCodec;
 import org.springframework.stereotype.Component;
