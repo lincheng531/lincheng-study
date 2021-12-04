@@ -102,6 +102,76 @@
 1. 在配置文件中配置dubbo配置信息
 
 ```
-
+dubbo:
+  application:
+    #dubbo应用名称
+    name: ${spring.application.name}
+    #是否使用远程的元数据中心，如果使用，则会将元数据信息注册到指定的元数据中心，否则使用本地元数据中心
+    metadata-type: local
+    #qos=Quality of Service 是Dubbo的在线运维命令，可以对服务进行动态的配置、控制(上下线)及查询，
+    #qos-enable: true
+  registry:
+    # 注册中心与注册地址
+    address: spring-cloud://127.0.0.1:8848
+    #不将注册中心用于配置中心
+    use-as-config-center: false
+    #是否允许订阅
+    #subscribe: true
+    # 注册者允许的协议
+    #accepts: dubbo,rest
+  #consumer:
+    #启动时不检查生产者的状态，防止生产者未启动时启动失败
+    #check: false
+  #provider:
+    # 服务提供者要求使用随机Token加密，防止消费者绕过注册中心调用
+    #token: true
+  #Dubbo服务暴露的协议配置
+  protocol:
+    #协议名称
+    name: dubbo
+    # dubbo协议端口(1 表示自增端口,从20880开始)
+    port: -1
+  #dubbo服务扫描基准包
+  scan:
+    #base-packages: com.lincheng.study.api
+  cloud:
+    #Dubbo 消费端订阅服务端的应用名，多个服务提供者用逗号分隔
+    subscribed-services: study-cloud-alibaba-product
 ```
+
+- metadata-type
+  - dubbo.application.metadata-type 的取值为 remote 或 local， 默认 local。对于 应用的元数据，Dubbo提供了两种保存方式 【本地保存】 和 【元数据中心保存】。如果为local ，则会将应用的元数据信息保存在应用本地，否则则会将元数据信息保存到 metadata-report.address 指定的元数据中心中。因此，当此属性为 remote 时， 必须存在 metadata-report.address 配置
+  - 调用时机：在DubboBootstrap 中会调用 DubboBootstrap#initialize会调用 DubboBootstrap#initMetadataService方法，其中会根据 metadata-type 类型来获取不同的 MetadataService 实现类从而实现本地或远程保存
+2. 提供者暴露接口
+
+   ```java
+   //暴露接口
+   @DubboService
+   public class ProductServiceApiImpl implements IProductServiceApi {
+   
+       public Object testDubbo(String source){
+           return source + "测试product,dubbo成功";
+       }
+   }
+   ```
+
+3. 消费者调用提供者
+
+   ```java
+   @RestController
+   @RequestMapping("/testDubbo")
+   public class TestDubboController {
+   
+       @DubboReference(check = false, timeout = 5 * 1000, retries = 0)
+       private IProductServiceApi productServiceApi;
+   
+       @RequestMapping("/transferProduct")
+       public Object transferProduct() {
+           return productServiceApi.testDubbo("consumer");
+       }
+   
+   }
+   ```
+
+   
 

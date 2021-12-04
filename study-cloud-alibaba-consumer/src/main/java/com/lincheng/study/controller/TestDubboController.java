@@ -14,11 +14,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/testDubbo")
 public class TestDubboController {
 
-    @DubboReference(check = false ,timeout = 5 * 1000 ,retries = 0)
+    @DubboReference(check = false, timeout = 5 * 1000, retries = 0)
     private IProductServiceApi productServiceApi;
 
     @RequestMapping("/transferProduct")
-    public Object transferProduct(){
+    public Object transferProduct() {
         return productServiceApi.testDubbo("consumer");
     }
 
