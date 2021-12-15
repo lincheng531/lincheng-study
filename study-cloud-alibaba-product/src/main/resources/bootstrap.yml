@@ -1,6 +1,5 @@
 server:
   port: 8083
-
 spring:
   application:
     #应用名称
@@ -31,12 +30,25 @@ spring:
         extension-configs[0]:
           dataId: ${spring.application.name}.yml
           group: DEFAULT_GROUP
-          #true时(默认flase),@RestController才能生效
+          #true时(默认flase),@RefreshScope才能生效
           refresh: true
         extension-configs[1]:
           dataId: all.yml
           group: DEFAULT_GROUP
           refresh: true
+    stream:
+      bindings:
+        output: {destination: study-rocketMQ-topic, content-type: application/json}
+      rocketmq:
+        binder:
+          name-server: localhost:9876
+        bindings:
+          output:
+            producer:
+              #是否启用 Producer,默认值: true
+              enable: true
+              #是否使用同步得方式发送消息。默认值: false
+              sync: false
 
 dubbo:
   application:
@@ -55,10 +67,10 @@ dubbo:
     #subscribe: true
     # 注册者允许的协议
     #accepts: dubbo,rest
-  #consumer:
+    #consumer:
     # 启动时不检查生产者的状态，防止生产者未启动时启动失败
     #check: false
-  #provider:
+    #provider:
     # 服务提供者要求使用随机Token加密，防止消费者绕过注册中心调用
     #token: true
   #Dubbo服务暴露的协议配置
@@ -70,7 +82,7 @@ dubbo:
   #dubbo服务扫描基准包
   scan:
     base-packages: com.lincheng.study.api
-  #cloud:
+    #cloud:
     # Dubbo 消费端订阅服务端的应用名，多个服务提供者用逗号分隔
     #subscribed-services: study-dubbo-product
 

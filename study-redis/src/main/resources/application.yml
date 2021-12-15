@@ -2,6 +2,8 @@ server:
   port: 8081
 
 spring:
+  application:
+    name: study-redis
   redis:
     host: 127.0.0.1
     port: 6379

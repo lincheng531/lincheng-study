@@ -38,6 +38,20 @@ spring:
           dataId: all.yml
           group: DEFAULT_GROUP
           refresh: true
+    stream:
+      bindings:
+        output: {destination: study-rocketMQ-topic, content-type: application/json, group: product-output-group }
+      rocketmq:
+        binder:
+          name-server: localhost:9876
+        bindings:
+          output:
+            consumer:
+              enabled: true
+              #Consumer 是否是广播消费模式。如果想让所有的订阅者都能接收到消息，可以使用广播模式。默认值: false。
+              broadcasting: false
+              #Consumer 是否同步消费消息模式。
+              orderly: false
 
 
 dubbo:
@@ -75,3 +89,5 @@ dubbo:
   cloud:
     #Dubbo 消费端订阅服务端的应用名，多个服务提供者用逗号分隔
     subscribed-services: study-cloud-alibaba-product
+
+

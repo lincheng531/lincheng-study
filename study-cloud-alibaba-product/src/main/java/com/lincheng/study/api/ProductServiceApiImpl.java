@@ -12,6 +12,7 @@ import org.apache.dubbo.config.annotation.DubboService;
 @DubboService
 public class ProductServiceApiImpl implements IProductServiceApi {
 
+    @Override
     public Object testDubbo(String source){
         return source + "测试product,dubbo成功";
     }
