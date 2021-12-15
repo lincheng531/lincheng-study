@@ -94,8 +94,7 @@ public class DateUtils {
      */
     public static LocalDate dateToLocalDate(Date date) {
         Instant instant = date.toInstant();
-        LocalDate localDate = instant.atZone(ZoneId.systemDefault()).toLocalDate();
-        return localDate;
+        return instant.atZone(ZoneId.systemDefault()).toLocalDate();
     }
 
 
@@ -121,8 +120,7 @@ public class DateUtils {
      */
     public static LocalTime dateToLocalTime(Date date) {
         Instant instant = date.toInstant();
-        LocalTime localTime = instant.atZone(ZoneId.systemDefault()).toLocalTime();
-        return localTime;
+        return instant.atZone(ZoneId.systemDefault()).toLocalTime();
     }
 
 
@@ -178,6 +176,21 @@ public class DateUtils {
     public static LocalDateTime timestampToLocalDateTime(Timestamp timestamp) {
         long time = timestamp.getTime();
         return LocalDateTime.ofEpochSecond(time / 1000, 0, ZoneOffset.ofHours(8));
+    }
+
+
+    /**
+     * @Description: LocalDate To Timestamp
+     * @author: linCheng
+     * @Date: 2021/10/22 17:16
+     * @param: localDateTime
+     * @Return: java.sql.Timestamp
+     */
+    public static Timestamp localDateTimeToTimestamp(LocalDateTime localDateTime) {
+        if (null == localDateTime) {
+            localDateTime = LocalDateTime.now();
+        }
+        return Timestamp.valueOf(localDateTime);
     }
 
 
@@ -319,6 +332,32 @@ public class DateUtils {
 
 
     /**
+     * @Description: String To LocalDate
+     * @author: linCheng
+     * @Date: 2021/12/9 15:57
+     * @param: date
+     * @param: pattern
+     * @Return: java.time.LocalDate
+     */
+    public static LocalDate stringToLocalDate(String date ,String pattern) {
+        return LocalDate.parse(date, DateTimeFormatter.ofPattern(pattern));
+    }
+
+    /**
+     * @Description: LocalDate To String
+     * @author: linCheng
+     * @Date: 2021/12/15 15:43
+     * @param: date
+     * @param: pattern
+     * @Return: java.lang.String
+     */
+    public static String localDateToString(LocalDate date ,String pattern) {
+        DateTimeFormatter fmt = DateTimeFormatter.ofPattern(pattern);
+        return date.format(fmt);
+    }
+
+
+    /**
      * @Description: Timestamp To LocalDate
      * @author: linCheng
      * @Date: 2021/10/22 17:20
@@ -332,17 +371,15 @@ public class DateUtils {
 
 
     /**
-     * @Description: LocalDate To Timestamp
+     * @Description: localDate To Timestamp
      * @author: linCheng
-     * @Date: 2021/10/22 17:16
-     * @param: localDateTime
+     * @Date: 2021/12/9 16:04
+     * @param: localDate
      * @Return: java.sql.Timestamp
      */
-    public static Timestamp localDateToTimestamp(LocalDateTime localDateTime) {
-        if (null == localDateTime) {
-            localDateTime = LocalDateTime.now();
-        }
-        return Timestamp.valueOf(localDateTime);
+    public static Timestamp localDateToTimestamp(LocalDate localDate){
+        long timestamp = localDate.atStartOfDay(ZoneOffset.ofHours(8)).toInstant().toEpochMilli();
+        return new Timestamp(timestamp);
     }
 
 
