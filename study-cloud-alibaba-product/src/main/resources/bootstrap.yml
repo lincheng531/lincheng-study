@@ -49,6 +49,43 @@ spring:
               enable: true
               #是否使用同步得方式发送消息。默认值: false
               sync: false
+    alibaba:
+      seata:
+        #配置事务分组，service.vgroupMapping.my_test_tx_group=default。要保持一致性。
+        tx-service-group: my_test_tx_group
+
+#seata配置
+seata:
+  registry:
+    #配置seata的注册中心
+    type: nacos
+    nacos:
+      #服务地址
+      server-addr: http://localhost:8848
+      #服务名称
+      application: seata-server
+      #分组名称
+      group: SEATA_GROUP
+      #用户
+      username: nacos
+      #密码
+      password: nacos
+  #配置seata配置中心，可以读取关于seata clinet的配置
+  config:
+    type: nacos
+    nacos:
+      #服务地址
+      server-addr: http://localhost:8848
+      #用户
+      username: nacos
+      #密码
+      password: nacos
+      #分组
+      group: SEATA_GROUP
+      #命名空间
+      namespace: b34fc235-df78-430b-945d-e46a5efa0ae8
+
+
 
 dubbo:
   application:

@@ -309,3 +309,166 @@ dubbo:
 10. 总结
 
     - 无论是yml，还是代码绑定的通道，都是要同一个才能进行发送与接
+
+## 五、事务管理（seata）
+
+1. seata server (TC) 环境搭建
+
+   - Server端存储模式(store.mode) 支持三种:
+
+     - file: (默认)单机模式，全局事务会话信息内存中读写并持久化本地文件root.data,性能较高(默认)
+
+     - db:高可用模式，全局事务会话信息通过db共享,相应性能差些
+
+       - 配置file.conf，目录路径：seata-server-1.3.0\seata\conf\file.conf
+
+       - mysql8.0及以上版本的需要更改:`driverClassName = "com.mysql.cj.jdbc.Driver"`
+
+       - 创建数据库，名称为：seata
+
+       - 创建表，sql在资源文件中：目录路径：seata-1.3.0\seata-1.3.0\script\server\db
+
+         ```
+         store {
+         
+           mode = "db"
+         
+           db {
+             datasource = "druid"
+             dbType = "mysql"
+             driverClassName = "com.mysql.cj.jdbc.Driver"
+             url = "jdbc:mysql://127.0.0.1:3306/seata"
+             user = "root"
+             password = "123456"
+             minConn = 5
+             maxConn = 30
+             globalTable = "global_table"
+             branchTable = "branch_table"
+             lockTable = "lock_table"
+             queryLimit = 100
+             maxWait = 5000
+           }
+         
+         }
+         ```
+
+     - redis: Seata-Server 1.3及以上版本支持，性能较高，存在事务信息丢失风险请提前配置适合当前场景的redis持久化配置
+
+   - 配置注册中心与配置中心
+
+     - 配置registry.conf：路径：seata-server-1.3.0\seata\conf\registry.conf
+
+       ```
+       registry {
+       
+         type = "nacos"
+       
+         nacos {
+           application = "seata-server"
+           serverAddr = "127.0.0.1:8848"
+           group = "SEATA_GROUP"
+           namespace = ""
+           cluster = "default"
+           username = "nacos"
+           password = "nacos"
+         }
+       
+       }
+       
+       config {
+       
+         type = "nacos"
+       
+         nacos {
+           serverAddr = "127.0.0.1:8848"
+           namespace = "9e91ae12-78e0-4354-b271-dd5787d790e9"
+           group = "SEATA_GROUP"
+           username = "nacos"
+           password = "nacos"
+         }
+       
+       }
+       ```
+
+     - 将seata配置信息，配置到nacos中, 资源文件中：目录路径：\seata-1.3.0\seata-1.3.0\script\config-center\config.txt，并且修改配置内容。
+
+       - 将store.mode=file 改成store.mode=db，删除不必要的file，redis配置
+       - service.vgroupMapping.my_test_tx_group=default  事务分组，解决异地环境问题，可以自定义，对应的client也要去设置；default  必须等于registry.conf中的registry.nocos.cluster = "default"
+       - 
+
+     - 启动nacos-config.sh，把配置好的配置信息，加载到nacos配置中心；路径：seata-1.3.0\seata-1.3.0\script\config-center\nacos
+
+     - 执行 sh nacos-config.sh -h 127.0.0.1 -p 8848 -g STATA_GROPU -t 9e91ae12-78e0-4354-b271-dd5787d790e9 
+
+       -h: host,默认值localhost
+       -p: port,默认值8848
+       -g:配置分组,默认值为'SEATA_ GROUP'
+       -t:租户信息，对应Nacos的命名空间ID字段,默认值为空
+
+     - 总结：需要config.txt的数据源改为db.然后通过nacos-config.sh注册到配置中心
+
+   - 启动seata
+
+     - 执行seata-server-1.3.0\seata\bin\seata-server.bat
+   
+2. 项目配置
+   
+   1. 添加依赖
+   
+      ```
+      		<dependency>
+                  <groupId>com.alibaba.cloud</groupId>
+                  <artifactId>spring-cloud-starter-alibaba-seata</artifactId>
+              </dependency>
+      ```
+   
+   2.   各微服务对应数据库中添加undo_log表，sql路径：seata-1.3.0\script\client\at\db
+   
+   3. 配合yml
+   
+      ```yaml
+      spring:
+        cloud:
+          alibaba:
+            seata:
+              #配置事务分组，service.vgroupMapping.my_test_tx_group=default。要保持一致性。
+              tx-service-group: my_test_tx_group
+              
+      #seata配置
+      seata:
+        #注册中心
+        registry:
+          #配置seata的注册中心
+          type: nacos
+          nacos:
+            #服务地址
+            server-addr: http://localhost:8848
+            #服务名称
+            application: seata-server
+            #分组名称
+            group: SEATA_GROUP
+            #用户
+            username: nacos
+            #密码
+            password: nacos
+        #配置seata配置中心，可以读取关于seata clinet的配置
+        config:
+          type: nacos
+          nacos:
+            #服务地址
+            server-addr: http://localhost:8848
+            #用户
+            username: nacos
+            #密码
+            password: nacos
+            #分组
+            group: SEATA_GROUP
+            #命名空间
+            #namespace: b34fc235-df78-430b-945d-e46a5efa0ae8
+      ```
+   
+      
+   
+   4. 
+   
+   5. 
