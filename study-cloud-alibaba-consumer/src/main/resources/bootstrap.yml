@@ -6,6 +6,14 @@ spring:
   application:
     #应用名称
     name: study-cloud-alibaba-consumer
+  datasource:
+    username: root
+    password: 123456
+    url: jdbc:mysql://127.0.0.1:3306/consumer?useUnicode=yes&characterEncoding=UTF-8&useSSL=false&serverTimezone=Asia/Shanghai
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
   cloud:
     nacos:
       discovery:
@@ -52,7 +60,41 @@ spring:
               broadcasting: false
               #Consumer 是否同步消费消息模式。
               orderly: false
+    alibaba:
+      seata:
+        #配置事务分组，service.vgroupMapping.my_test_tx_group=default。要保持一致性。
+        tx-service-group: my_test_tx_group
 
+#seata配置
+seata:
+  registry:
+    #配置seata的注册中心
+    type: nacos
+    nacos:
+      #服务地址
+      server-addr: http://localhost:8848
+      #服务名称
+      application: seata-server
+      #分组名称
+      group: SEATA_GROUP
+      #用户
+      username: nacos
+      #密码
+      password: nacos
+  #配置seata配置中心，可以读取关于seata clinet的配置
+  config:
+    type: nacos
+    nacos:
+      #服务地址
+      server-addr: http://localhost:8848
+      #用户
+      username: nacos
+      #密码
+      password: nacos
+      #分组
+      group: SEATA_GROUP
+      #命名空间
+      #namespace: b34fc235-df78-430b-945d-e46a5efa0ae8
 
 dubbo:
   application:
@@ -90,4 +132,13 @@ dubbo:
     #Dubbo 消费端订阅服务端的应用名，多个服务提供者用逗号分隔
     subscribed-services: study-cloud-alibaba-product
 
-
+#mybatis-plus sql执行日志
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  mapper-locations: classpath:mapper/*.xml
+  global-config:
+    db-config:
+      logic-delete-field: state  # 全局逻辑删除的实体字段名(since 3.3.0,配置后可以忽略不配置步骤2)
+      logic-delete-value: 0 # 逻辑已删除值(默认为 1)
+      logic-not-delete-value: 1 # 逻辑未删除值(默认为 0)

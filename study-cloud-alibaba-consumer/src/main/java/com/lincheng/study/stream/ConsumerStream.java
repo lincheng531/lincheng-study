@@ -13,4 +13,7 @@ public interface ConsumerStream {
     @Input("output")
     SubscribableChannel consumerOutput();
 
+
+
+
 }

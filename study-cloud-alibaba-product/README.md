@@ -2,7 +2,11 @@
 
 ## 一、注册中心（discovery）
 
-1. 配置文件中，添加nacos配置
+1. 启动nacos
+
+   进入bin目录下，cmd进入命令行，输入 startup.cmd -m standalone 回车，启动nacos
+   
+2. 配置文件中，添加nacos配置
 
    ```yaml
    spring:
@@ -20,7 +24,7 @@
            register-enabled: true
    ```
 
-2. 在启动类中，添加注解@EnableDiscoveryClient，开启服务注册与发现功能
+3. 在启动类中，添加注解@EnableDiscoveryClient，开启服务注册与发现功能
 
    ```java
    @SpringBootApplication
@@ -35,7 +39,7 @@
    }
    ```
 
-3. 启动后，在nacos服务管理-服务列表可看到已注册服务
+4. 启动后，在nacos服务管理-服务列表可看到已注册服务
 
 ![avatar](./picture/服务注册.png)
 
@@ -467,8 +471,56 @@ dubbo:
             #namespace: b34fc235-df78-430b-945d-e46a5efa0ae8
       ```
    
+   4. 消费者业务代码，只需要在方法上加@GlobalTransactional注解即可
+   
+      ```java
+      @Service
+      public class SeataOrderServiceImpl extends ServiceImpl<SeataOrderMapper, SeataOrder> implements ISeataOrderService {
       
+          @Resource
+          private SeataOrderMapper seataOrderMapper;
+      
+          @DubboReference(check = false, timeout = 5 * 1000, retries = 0)
+          private IProductServiceApi productServiceApi;
+      
+      
+          @Override
+          @GlobalTransactional
+          public void saveSeataOrder(){
+              SeataOrder seataOrder = new SeataOrder();
+              seataOrder.setOrderNum(1);
+              seataOrder.setProductId(1L);
+              seataOrderMapper.insert(seataOrder);
+      
+              productServiceApi.testSeata(1L);
+          }
+      
+      }
+      ```
    
-   4. 
+   5. 生产者业务代码
    
-   5. 
+      ```java
+      @Service
+      public class SeataProductServiceImpl extends ServiceImpl<SeataProductMapper, SeataProduct> implements ISeataProductService {
+      
+          @Resource
+          private SeataProductMapper seataProductMapper;
+      
+      
+          @Override
+          public void testSeata(Long productId) {
+      
+              SeataProduct seataProduct = seataProductMapper.selectById(productId);
+              seataProduct.setStockNum(seataProduct.getStockNum() - 1);
+      
+              Integer a = 1/0;
+      
+              seataProductMapper.updateById(seataProduct);
+      
+          }
+      
+      }
+      ```
+   
+      

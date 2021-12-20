@@ -1,6 +1,16 @@
 server:
   port: 8083
+
+
 spring:
+  datasource:
+    username: root
+    password: 123456
+    url: jdbc:mysql://127.0.0.1:3306/product?useUnicode=yes&characterEncoding=UTF-8&useSSL=false&serverTimezone=Asia/Shanghai
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
   application:
     #应用名称
     name: study-cloud-alibaba-product
@@ -83,7 +93,7 @@ seata:
       #分组
       group: SEATA_GROUP
       #命名空间
-      namespace: b34fc235-df78-430b-945d-e46a5efa0ae8
+      #namespace: b34fc235-df78-430b-945d-e46a5efa0ae8
 
 
 
@@ -123,3 +133,13 @@ dubbo:
     # Dubbo 消费端订阅服务端的应用名，多个服务提供者用逗号分隔
     #subscribed-services: study-dubbo-product
 
+#mybatis-plus sql执行日志
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  mapper-locations: classpath:mapper/*.xml
+  global-config:
+    db-config:
+      logic-delete-field: state  # 全局逻辑删除的实体字段名(since 3.3.0,配置后可以忽略不配置步骤2)
+      logic-delete-value: 0 # 逻辑已删除值(默认为 1)
+      logic-not-delete-value: 1 # 逻辑未删除值(默认为 0)
