@@ -120,6 +120,13 @@
             <version>${spring.cloud.alibaba.version}</version>
         </dependency>
 
+        <!--流控-->
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-sentinel</artifactId>
+            <version>${spring.cloud.alibaba.version}</version>
+        </dependency>
+
         <!--
             redisson
             版本选择：https://github.com/redisson/redisson/tree/master/redisson-spring-boot-starter

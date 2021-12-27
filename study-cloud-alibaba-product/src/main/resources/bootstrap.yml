@@ -63,6 +63,9 @@ spring:
       seata:
         #配置事务分组，service.vgroupMapping.my_test_tx_group=default。要保持一致性。
         tx-service-group: my_test_tx_group
+    sentinel:
+      transport:
+        dashboard: http://localhost:8858
 
 #seata配置
 seata:
