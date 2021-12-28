@@ -19,10 +19,10 @@ public enum BaseErrorEnum implements BaseError {
         this.resultMsg = resultMsg;
     }
 
-    // 错误码
+    // 状态码
     private String resultCode;
 
-    // 错误描述
+    //结果描述
     private String resultMsg;
 
     @Override

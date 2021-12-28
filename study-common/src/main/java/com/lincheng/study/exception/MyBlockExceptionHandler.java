@@ -8,6 +8,7 @@ import com.alibaba.csp.sentinel.slots.block.flow.FlowException;
 import com.alibaba.csp.sentinel.slots.block.flow.param.ParamFlowException;
 import com.alibaba.csp.sentinel.slots.system.SystemBlockException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.lincheng.study.domain.base.Response;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
@@ -30,17 +31,17 @@ public class MyBlockExceptionHandler implements BlockExceptionHandler {
         // getRule()- 资源规则的详细信息
         log.info("BlockExceptionHandler BlockException=============" + e.getRule());
 
-        String result = null;
+        Response<Object> result = null;
         if (e instanceof FlowException) {
-            result = "接口限流了";
+            result = new Response<>("901","接口限流了");
         } else if (e instanceof DegradeException) {
-            result = "服务降级了";
+            result = new Response<>("902","服务降级了");
         } else if (e instanceof ParamFlowException) {
-            result = "热点参数限流了";
+            result = new Response<>("903","热点参数限流了");
         } else if (e instanceof SystemBlockException) {
-            result = "触发系统保护规则了";
+            result = new Response<>("904","触发系统保护规则了");
         } else if (e instanceof AuthorityException) {
-            result = "授权规则不通过";
+            result = new Response<>("905","授权规则不通过");
         }
 
         httpServletResponse.setStatus(400);
