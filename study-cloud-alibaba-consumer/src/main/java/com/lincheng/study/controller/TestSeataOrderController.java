@@ -18,7 +18,7 @@ import javax.annotation.Resource;
  */
 @RestController
 @RequestMapping("/testSeata")
-public class SeataOrderController {
+public class TestSeataOrderController {
 
     @Resource
     private ISeataOrderService seataOrderService;

@@ -523,4 +523,43 @@ dubbo:
       }
       ```
    
-      
+
+## 六、流控（sentinel）
+
+1. 部署sentinel控制台
+
+   - [jar下载](https://github.com/alibaba/Sentinel/releases) 
+
+   - [jar启动](https://github.com/alibaba/Sentinel/wiki/%E6%8E%A7%E5%88%B6%E5%8F%B0) 
+
+     ```
+     java -Dserver.port=8858  -jar sentinel-dashboard-1.8.1.jar
+     ```
+
+2. 整合
+
+   - 添加依赖
+
+     ```xml
+     <dependency>
+         <groupId>com.alibaba.cloud</groupId>
+         <artifactId>spring-cloud-starter-alibaba-sentinel</artifactId>
+         <version>${spring.cloud.alibaba.version}</version>
+     </dependency>
+     ```
+
+   - yml配置
+
+     ```yaml
+     spring:
+       cloud:
+         sentinel: 
+           transport:
+           	dashboard: http://localhost:8858
+     ```
+
+3. ds
+
+4. sdfa
+
+5. 
