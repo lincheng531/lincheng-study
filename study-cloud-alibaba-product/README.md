@@ -398,23 +398,22 @@ dubbo:
 
        - 将store.mode=file 改成store.mode=db，删除不必要的file，redis配置
        - service.vgroupMapping.my_test_tx_group=default  事务分组，解决异地环境问题，可以自定义，对应的client也要去设置；default  必须等于registry.conf中的registry.nocos.cluster = "default"
-       - 
-
-     - 启动nacos-config.sh，把配置好的配置信息，加载到nacos配置中心；路径：seata-1.3.0\seata-1.3.0\script\config-center\nacos
-
-     - 执行 sh nacos-config.sh -h 127.0.0.1 -p 8848 -g STATA_GROPU -t 9e91ae12-78e0-4354-b271-dd5787d790e9 
-
-       -h: host,默认值localhost
+       
+  - 启动nacos-config.sh，把配置好的配置信息，加载到nacos配置中心；路径：seata-1.3.0\seata-1.3.0\script\config-center\nacos
+   
+  - 执行 sh nacos-config.sh -h 127.0.0.1 -p 8848 -g STATA_GROPU -t 9e91ae12-78e0-4354-b271-dd5787d790e9或者直接双击执行nacos-config.sh
+   
+    -h: host,默认值localhost
        -p: port,默认值8848
        -g:配置分组,默认值为'SEATA_ GROUP'
        -t:租户信息，对应Nacos的命名空间ID字段,默认值为空
-
-     - 总结：需要config.txt的数据源改为db.然后通过nacos-config.sh注册到配置中心
-
-   - 启动seata
-
-     - 执行seata-server-1.3.0\seata\bin\seata-server.bat
    
+  - 总结：需要config.txt的数据源改为db.然后通过nacos-config.sh注册到配置中心
+   
+- 启动seata
+  
+  - 执行seata-server-1.3.0\seata\bin\seata-server.bat
+  
 2. 项目配置
    
    1. 添加依赖
@@ -471,7 +470,11 @@ dubbo:
             #namespace: b34fc235-df78-430b-945d-e46a5efa0ae8
       ```
    
-   4. 消费者业务代码，只需要在方法上加@GlobalTransactional注解即可
+   4. 在每个库中加上undo_log表
+   
+      资源文件在：seata-1.3.0\script\client\at\db 中。
+      
+   5. 消费者业务代码，只需要在方法上加@GlobalTransactional注解即可
    
       ```java
       @Service
@@ -498,7 +501,7 @@ dubbo:
       }
       ```
    
-   5. 生产者业务代码
+   6. 生产者业务代码
    
       ```java
       @Service
