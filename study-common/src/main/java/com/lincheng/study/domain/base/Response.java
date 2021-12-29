@@ -1,11 +1,14 @@
 package com.lincheng.study.domain.base;
 
+import lombok.Data;
+
 import java.io.Serializable;
 
 /**
  * @author lincheng5
  * @date 2021/12/28 21:23
  */
+@Data
 public class Response<T> implements Serializable {
 
     /**

@@ -23,7 +23,7 @@ import javax.servlet.http.HttpServletResponse;
  **/
 @Component
 @Slf4j
-public class MyBlockExceptionHandler implements BlockExceptionHandler {
+public class GlobalBlockExceptionHandler implements BlockExceptionHandler {
 
     @Override
     public void handle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, BlockException e) throws Exception {

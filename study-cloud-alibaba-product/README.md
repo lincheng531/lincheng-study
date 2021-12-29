@@ -558,11 +558,62 @@ dubbo:
        cloud:
          sentinel: 
            transport:
+             #绑定sentinel服务
            	dashboard: http://localhost:8858
      ```
 
-3. ds
+3. 控制台配置
 
-4. sdfa
+   1. 阈值类型
 
-5. 
+      - QPS：每秒最大请求数
+      - 线程数：每秒最大并发数
+
+   2. 流控模式
+
+      - 直接：
+
+        针对当前资源进行处理
+
+      - 关联：
+
+        A资源关联B资源，请求发给B，如果达到阈值，那么则对A限流。
+
+        如/add接口大量请求，对/select接口进行限流（对select进行配置）（某时刻，大量插入数据，这时限流查询）
+
+        ![avatar](./picture/sentinel-流控模式-关联配置.png)
+
+      - 链路：
+
+        以调用链路为单位做限流处理，例如：A->B->C 这个链路的总体流量只按入口A的请求量来计算
+
+        接口/testLinkOne 调用 testLinkService()方法，接口/testLinkTow调用 testLinkService()方法。
+
+        在方法testLinkService()中添加@SentinelResource。对/testLinkTow配置。只有testLinkTow达到阈值才会进行限流，而/testLinkOne不会有影响。
+
+        ```java
+        	@SentinelResource(blockHandler = "flowblockHandler")
+            public String testLinkService(String api){
+                return "testLink:" + api;
+            }
+        
+        	public String flowblockHandler(String api,BlockException ex) {
+                return "链路流控！！！！！！! ! " ;
+            }
+        ```
+
+   3. 流控效果
+
+      - 快速失败（默认使用）：
+
+        超出阈值规则后直接抛出异常
+
+      - warm up（预热）:
+
+        冷启动（RuleConstant.CONTROL_BEHAVIOR_WARM_UP）方式。该方式主要用于系统长期处于低水位的情况下，当流量突然增加时，直接把系统拉升到高水位可能瞬间把系统压垮。通过"冷启动"，让通过的流量缓慢增加，在一定时间内逐渐增加到阈值上限，给冷系统一个预热的时间，避免冷系统被压垮的情况。比如设置的阈值为100，预热时间10s，冷加载因子是3,那最初的阈值时100/3,逐步加大阈值，10s后达到100。
+
+      - 排队等待：
+
+        匀速器（RuleConstant.CONTROL_BEHAVIOR_RATE_LIMITER）方式。需要设置将阈值模式设置为QPS才能生效。这种方式严格控制了请求通过的间隔时间，也即是让请求以均匀的速度通过，对应的是漏桶算法。
+
+4. SD

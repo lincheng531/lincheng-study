@@ -2,8 +2,11 @@ package com.lincheng.study.controller;
 
 import com.alibaba.csp.sentinel.annotation.SentinelResource;
 import com.alibaba.csp.sentinel.slots.block.BlockException;
+import com.lincheng.study.service.TestSentinelService;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.annotation.Resource;
 
 /**
  * @description:
@@ -13,6 +16,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/sentinel")
 public class TestSentinelController {
+
+
+    @Resource
+    private TestSentinelService testSentinelService;
+
 
     @RequestMapping("/testQBS")
     //@SentinelResource(blockHandler = "flowblockHandler")
@@ -29,7 +37,31 @@ public class TestSentinelController {
     }
 
 
+    @RequestMapping("/testAdd")
+    public String testAdd() throws InterruptedException {
+        return "testAdd";
+    }
+
+
+    @RequestMapping("/testSelect")
+    public String testSelect() throws InterruptedException {
+        return "testSelect";
+    }
+
+
+    @RequestMapping("/testLinkOne")
+    public String testLinkOne() throws InterruptedException {
+        return testSentinelService.testLinkService("testLinkOne");
+    }
+
+
+    @RequestMapping("/testLinkTow")
+    public String testLinkTow() throws InterruptedException {
+        return testSentinelService.testLinkService("testLinkTow");
+    }
+
+
     public String flowblockHandler(BlockException ex) {
-        return "流控! ! " ;
+        return "流控! ! ";
     }
 }

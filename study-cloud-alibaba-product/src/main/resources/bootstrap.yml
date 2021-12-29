@@ -66,6 +66,8 @@ spring:
     sentinel:
       transport:
         dashboard: http://localhost:8858
+      #默认将调用链路收敛
+      web-context-unify: false
 
 #seata配置
 seata:
