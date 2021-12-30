@@ -85,14 +85,14 @@
             <version>${spring.boot.version}</version>
         </dependency>
 
-        <!--注册中心-->
+        <!--注册中心nacos-->
         <dependency>
             <groupId>com.alibaba.cloud</groupId>
             <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
             <version>${spring.cloud.alibaba.version}</version>
         </dependency>
 
-        <!--配置中心-->
+        <!--配置中心nacos-->
         <dependency>
             <groupId>com.alibaba.cloud</groupId>
             <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
@@ -106,26 +106,38 @@
             <version>${spring.cloud.alibaba.version}</version>
         </dependency>
 
-        <!--MQ-->
+        <!--消息队列rocketmq-->
         <dependency>
             <groupId>com.alibaba.cloud</groupId>
             <artifactId>spring-cloud-starter-stream-rocketmq</artifactId>
             <version>${spring.cloud.alibaba.version}</version>
         </dependency>
 
-        <!--事务-->
+        <!--事务seata-->
         <dependency>
             <groupId>com.alibaba.cloud</groupId>
             <artifactId>spring-cloud-starter-alibaba-seata</artifactId>
             <version>${spring.cloud.alibaba.version}</version>
         </dependency>
 
-        <!--流控-->
+        <!--流控sentinel-->
         <dependency>
             <groupId>com.alibaba.cloud</groupId>
             <artifactId>spring-cloud-starter-alibaba-sentinel</artifactId>
             <version>${spring.cloud.alibaba.version}</version>
         </dependency>
+
+        <!--sentinel配置持久化-->
+       <dependency>
+            <groupId>com.alibaba.csp</groupId>
+            <artifactId>sentinel-datasource-nacos</artifactId>
+        </dependency>
+<!--
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-alibaba-sentinel-gateway</artifactId>
+        </dependency>
+-->
 
         <!--
             redisson

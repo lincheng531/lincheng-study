@@ -3,7 +3,9 @@ package com.lincheng.study.controller;
 import com.alibaba.csp.sentinel.annotation.SentinelResource;
 import com.alibaba.csp.sentinel.slots.block.BlockException;
 import com.lincheng.study.service.TestSentinelService;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
@@ -61,7 +63,29 @@ public class TestSentinelController {
     }
 
 
+    @RequestMapping("/exception")
+    public Integer exception(){
+        Integer a =2/0;
+        return a;
+    }
+
+
+
+    @RequestMapping("/hotSpot/{id}")
+    @SentinelResource(value = "hotSpot",blockHandler = "hotBlockHandler")
+    public String hotSpot(@PathVariable("id") String id){
+        return id;
+    }
+
+
+
     public String flowblockHandler(BlockException ex) {
         return "流控! ! ";
     }
+
+    public String hotBlockHandler(@PathVariable("id") String id,BlockException ex) {
+        return "热点流控! ! ";
+    }
+
+
 }

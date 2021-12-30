@@ -68,7 +68,19 @@ spring:
         dashboard: http://localhost:8858
       #默认将调用链路收敛
       web-context-unify: false
-
+      #持久化配置
+      datasource:
+        #自定义
+        sentinel-app:
+          nacos:
+            server-addr: http://localhost:8848
+            username: nacos
+            password: nacos
+            dataId: sentinel-application
+            #groupId: SENTINEL_GROUP
+            #namespace: 3e81c560-3c91-484f-bb67-c1a4e01ce688
+            #data-type: json
+            rule-type: flow
 #seata配置
 seata:
   registry:

@@ -558,73 +558,152 @@ dubbo:
            transport:
              #绑定sentinel服务
            	dashboard: http://localhost:8858
+           #默认将调用链路收敛
+           web-context-unify: false	
      ```
 
-3. 控制台配置
+3. 持久化配置
 
-   1. 阈值类型
+   - 加入依赖
 
-      - QPS：每秒最大请求数
-      - 线程数：每秒最大并发数
+     ```xml
+      <dependency>
+      	<groupId>com.alibaba.csp</groupId>
+         <artifactId>sentinel-datasource-nacos</artifactId>
+      </dependency>
+     ```
 
-   2. 流控模式
+   - [配置说明](https://github.com/alibaba/Sentinel/wiki/%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8) 
 
-      - 直接：
+     ![avatar](./picture/sentinel-持久化-配合说明.jpg)
 
-        针对当前资源进行处理
+   - yml添加配置
 
-      - 关联：
+     ```yaml
+     spring:
+       cloud:
+         sentinel: 
+           datasource:
+             #自定义
+             sentinel-app:
+               nacos:
+                 server-addr: http://localhost:8848
+                 username: nacos
+                 password: nacos
+                 dataId: sentinel-application
+                 #groupId: SENTINEL_GROUP
+                 #namespace: 3e81c560-3c91-484f-bb67-c1a4e01ce688
+                 #data-type: json
+                 rule-type: flow
+     ```
 
-        A资源关联B资源，请求发给B，如果达到阈值，那么则对A限流。
+4. 控制台配置
 
-        如/add接口大量请求，对/select接口进行限流（对select进行配置）（某时刻，大量插入数据，这时限流查询）
+   1. 流控规则
 
-        ![avatar](./picture/sentinel-流控模式-关联配置.png)
+      1. 流控模式
 
-      - 链路：
+         - 阈值类型
 
-        接口/testLinkOne 调用 testLinkService()方法，接口/testLinkTow调用 testLinkService()方法。
+           - QPS：每秒最大请求数
+           - 线程数：每秒最大并发数
 
-        在方法testLinkService()中添加@SentinelResource。对/testLinkTow配置。只有testLinkTow达到阈值才会进行限流，而/testLinkOne不会有影响。（这个有点鸡肋，可以配置成直接，流控testLinkTow是一样的效果）
+         - 流控模式
 
-        ```java
-        	@SentinelResource(blockHandler = "flowblockHandler")
-            public String testLinkService(String api){
-                return "testLink:" + api;
-            }
-        
-        	public String flowblockHandler(String api,BlockException ex) {
-                return "链路流控！！！！！！! ! " ;
-            }
-        ```
+           - 直接：
+
+             针对当前资源进行处理
+
+           - 关联：
+
+             A资源关联B资源，请求发给B，如果达到阈值，那么则对A限流。
+
+             如/add接口大量请求，对/select接口进行限流（对select进行配置）（某时刻，大量插入数据，这时限流查询）
+
+             ![avatar](./picture/sentinel-流控模式-关联配置.png)
+
+           - 链路：
+
+             接口/testLinkOne 调用 testLinkService()方法，接口/testLinkTow调用 testLinkService()方法。在方法testLinkService()中添加@SentinelResource。对/testLinkTow配置。只有testLinkTow达到阈值才会进行限流，而/testLinkOne不会有影响。（这个有点鸡肋，可以配置成直接，流控testLinkTow是一样的效果）
+
+             ```
+             	@SentinelResource(blockHandler = "flowblockHandler")
+                 public String testLinkService(String api){
+                     return "testLink:" + api;
+                 }
+             
+             	public String flowblockHandler(String api,BlockException ex) {
+                     return "链路流控！！！！！！! ! " ;
+                 }
+             ```
+
+      2. 流控效果
+
+         - 快速失败（默认使用）：
+
+           超出阈值规则后直接抛出异常
+
+         - warm up（预热）:
+
+           主要用来流控洪峰流量，冷启动（RuleConstant.CONTROL_BEHAVIOR_WARM_UP）方式。该方式主要用于系统长期处于低水位的情况下，当流量突然增加时，直接把系统拉升到高水位可能瞬间把系统压垮。通过"冷启动"，让通过的流量缓慢增加，在一定时间内逐渐增加到阈值上限，给冷系统一个预热的时间，避免冷系统被压垮的情况。比如设置的阈值为9，预热时间5s，冷加载因子是3,那最初的阈值时9/3 = 3,逐步加大阈值，5s后达到9。
+
+           ![avatar](./picture/sentinel-流控效果-预热.png)
+
+         - 排队等待
+
+           主要用来流控脉冲流量，需要设置将阈值模式设置为QPS才能生效。这种方式严格控制了请求通过的间隔时间，也即是让请求以均匀的速度通过，对应的是漏桶算法。每秒能处理5个QBS，如果一秒有10个QSB，将通5个QSB，还有5个QSB,将等待5秒中再处理，如果5秒后处理不了，将不处理。![avatar](./picture/sentinel-流控效果-排队.png)
       
-   3. 流控效果
+   2. 熔断降级规则
 
-      - 快速失败（默认使用）：
+      - 慢调用比例
 
-        超出阈值规则后直接抛出异常
+        慢调用比例(SLOW_ REQUEST RATIO):选择以慢调用比例作为阈值，需要设置允许的慢调用RT (即最大的响应时间)， 请求的响应时间大于该值则统计为慢调用。统计时长内请求数目大于设置的最小请求数目，并且慢调用的比例大于比例阈值，则接下来的熔断时长内请求会自动被熔断。经过熔断时长后熔断器会进入探测恢复状态(HALF-OPEN 状态) ,若接下来的一个请
+        求响应时间小于设置的慢调用RT则结束熔断，若大于设置的慢调用RT则会再次被熔断。
 
-      - warm up（预热）:
+        ![avatar](./picture/sentinel-熔断降级-慢调用比例.png)
 
-        主要用来流控洪峰流量，冷启动（RuleConstant.CONTROL_BEHAVIOR_WARM_UP）方式。该方式主要用于系统长期处于低水位的情况下，当流量突然增加时，直接把系统拉升到高水位可能瞬间把系统压垮。通过"冷启动"，让通过的流量缓慢增加，在一定时间内逐渐增加到阈值上限，给冷系统一个预热的时间，避免冷系统被压垮的情况。比如设置的阈值为9，预热时间5s，冷加载因子是3,那最初的阈值时9/3 = 3,逐步加大阈值，5s后达到9。
+      - 异常比例
 
-        ![avatar](./picture/sentinel-流控效果-预热.png)
+        异常比例(RROR RATIO): 当单位统计时长(statIntervaMs) 内请求数目大于设置的最小请求数目,并且异常的比例大于阈值,则接下来的熔断时长内请求会自动被熔断。经过熔断时长后熔断器会进入探测恢复状态(HALF-OPEN状态)，若接下来的一个请求成功完成(没有错误)则结束熔断，否则会再次被熔断。异常比率的阈值范围是[0.0, 1.0], 代表0% - 100%。
 
-      - 排队等待：
+        ![avatar](./picture/sentinel-熔断降级-异常比例.png)
+
+      - 异常数
+
+        异常数(RROR CouNT):当单位统计时长内的异常数目超过阈值之后会自动进行熔断。经过熔断时长后熔断器会进入探测恢复状态(HALF_OPEN状态)，若接下来的一个请求成功完成(没有错吴)则结束熔断,否则会再次被熔断。注意:异常降级仅针对业务异常,对Sentinel限流降级本身的异常(BlockException) 不生效。
+
+        ![avatar](./picture/sentinel-熔断降级-异常数.png)
       
-        主要用来流控脉冲流量，需要设置将阈值模式设置为QPS才能生效。这种方式严格控制了请求通过的间隔时间，也即是让请求以均匀的速度通过，对应的是漏桶算法。每秒能处理5个QBS，如果一秒有10个QSB，将通5个QSB，还有5个QSB,将等待5秒中再处理，如果5秒后处理不了，将不处理。
-        
-        ![avatar](./picture/sentinel-流控效果-排队.png)
+   3. 热点规则
 
-4. 熔断降级规则
+      配置热点参数规则注意:资源名必须是@SentinelResource(value="资源名")中 配置的资源名，热点规则依赖于注解如图中：当id=1或者id=2时 QPS为1时就限流，当id为别的参数时以上面的单机阈值配置为准
 
-   - 慢调用比例
+      ![avatar](./picture/sentinel-热点规则-热点参数.png)
 
-     慢调用比例(SLOW_ REQUEST RATIO):选择以慢调用比例作为阈值，需要设置允许的慢调用RT (即最大的响应时间)， 请求的响应时间大于该值则统计为慢调用。统计时长内请求数目大于设置的最小请求数目，并且慢调用的比例大于比例阈值，则接下来的熔断时长内请求会自动被熔断。经过熔断时长后熔断器会进入探测恢复状态(HALF-OPEN 状态) ,若接下来的一个请
-     求响应时间小于设置的慢调用RT则结束熔断，若大于设置的慢调用RT则会再次被熔断。
+      ```java
+      @RequestMapping("/hotSpot/{id}")
+      @SentinelResource(value = "hotSpot",blockHandler = "hotBlockHandler")
+      public String hotSpot(@PathVariable("id") String id){
+           return id;
+      }
+          
+      public String hotBlockHandler(@PathVariable("id") String id,BlockException ex) {
+              return "热点流控! ! ";
+      }
+      ```
+      
+   4. 系统规则
 
-     ![avatar](./picture/sentinel-熔断降级-慢调用比例.png)
+      - Load自适应(仅对Linux/Unix-like 机器生效) :系统的load1作为启发指标，进行自适应系统保护。当系统load1超过设定的启发值，且系统当前的并发线程数超过估算的系统容量时才会
+        触发系统保护(BBR 阶段)。系统容量由系统的maxQps * minRt估算得出。设定参考值一般是CPU cores * 2.5
+      - CPU usage (1.5.0+ 版本) :当系统CPU使用率超过阈值即触发系统保护(取值范围0.0-1.0)，比较灵敏。
+      - 平均RT:当单台机器上所有入口流量的平均RT达到阈值即触发系统保护，单位是毫秒。
+      - 并发线程数:当单台机器上所有入口流量的并发线程数达到阈值即触发系统保护。
+      - 入口QPS:当单台机器上所有入口流量的QPS达到阈值即触发系统保护。
 
-   - 
+5. gateway整合sentinel 
 
-5. 
+6. dubbo整合sentinel .
+
+   
+
