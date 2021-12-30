@@ -326,12 +326,6 @@ dubbo:
 
        - 配置file.conf，目录路径：seata-server-1.3.0\seata\conf\file.conf
 
-       - mysql8.0及以上版本的需要更改:`driverClassName = "com.mysql.cj.jdbc.Driver"`
-
-       - 创建数据库，名称为：seata
-
-       - 创建表，sql在资源文件中：目录路径：seata-1.3.0\seata-1.3.0\script\server\db
-
          ```
          store {
          
@@ -355,13 +349,21 @@ dubbo:
          
          }
          ```
+   
+       - mysql8.0及以上版本的需要更改:`driverClassName = "com.mysql.cj.jdbc.Driver"`
+   
+       - 创建数据库，名称为：seata
+   
+       - 创建表，sql在资源文件中：目录路径：seata-1.3.0\seata-1.3.0\script\server\db
+
+       - 在每个库中加上undo_log表：资源文件在：seata-1.3.0\script\client\at\db 中。
 
      - redis: Seata-Server 1.3及以上版本支持，性能较高，存在事务信息丢失风险请提前配置适合当前场景的redis持久化配置
 
    - 配置注册中心与配置中心
 
      - 配置registry.conf：路径：seata-server-1.3.0\seata\conf\registry.conf
-
+   
        ```
        registry {
        
@@ -395,7 +397,7 @@ dubbo:
        ```
 
      - 将seata配置信息，配置到nacos中, 资源文件中：目录路径：\seata-1.3.0\seata-1.3.0\script\config-center\config.txt，并且修改配置内容。
-
+   
        - 将store.mode=file 改成store.mode=db，删除不必要的file，redis配置
        - service.vgroupMapping.my_test_tx_group=default  事务分组，解决异地环境问题，可以自定义，对应的client也要去设置；default  必须等于registry.conf中的registry.nocos.cluster = "default"
        
@@ -470,10 +472,6 @@ dubbo:
             #namespace: b34fc235-df78-430b-945d-e46a5efa0ae8
       ```
    
-   4. 在每个库中加上undo_log表
-   
-      资源文件在：seata-1.3.0\script\client\at\db 中。
-      
    5. 消费者业务代码，只需要在方法上加@GlobalTransactional注解即可
    
       ```java
@@ -585,11 +583,9 @@ dubbo:
 
       - 链路：
 
-        以调用链路为单位做限流处理，例如：A->B->C 这个链路的总体流量只按入口A的请求量来计算
-
         接口/testLinkOne 调用 testLinkService()方法，接口/testLinkTow调用 testLinkService()方法。
 
-        在方法testLinkService()中添加@SentinelResource。对/testLinkTow配置。只有testLinkTow达到阈值才会进行限流，而/testLinkOne不会有影响。
+        在方法testLinkService()中添加@SentinelResource。对/testLinkTow配置。只有testLinkTow达到阈值才会进行限流，而/testLinkOne不会有影响。（这个有点鸡肋，可以配置成直接，流控testLinkTow是一样的效果）
 
         ```java
         	@SentinelResource(blockHandler = "flowblockHandler")
@@ -601,7 +597,7 @@ dubbo:
                 return "链路流控！！！！！！! ! " ;
             }
         ```
-
+      
    3. 流控效果
 
       - 快速失败（默认使用）：
@@ -610,10 +606,25 @@ dubbo:
 
       - warm up（预热）:
 
-        冷启动（RuleConstant.CONTROL_BEHAVIOR_WARM_UP）方式。该方式主要用于系统长期处于低水位的情况下，当流量突然增加时，直接把系统拉升到高水位可能瞬间把系统压垮。通过"冷启动"，让通过的流量缓慢增加，在一定时间内逐渐增加到阈值上限，给冷系统一个预热的时间，避免冷系统被压垮的情况。比如设置的阈值为100，预热时间10s，冷加载因子是3,那最初的阈值时100/3,逐步加大阈值，10s后达到100。
+        主要用来流控洪峰流量，冷启动（RuleConstant.CONTROL_BEHAVIOR_WARM_UP）方式。该方式主要用于系统长期处于低水位的情况下，当流量突然增加时，直接把系统拉升到高水位可能瞬间把系统压垮。通过"冷启动"，让通过的流量缓慢增加，在一定时间内逐渐增加到阈值上限，给冷系统一个预热的时间，避免冷系统被压垮的情况。比如设置的阈值为9，预热时间5s，冷加载因子是3,那最初的阈值时9/3 = 3,逐步加大阈值，5s后达到9。
+
+        ![avatar](./picture/sentinel-流控效果-预热.png)
 
       - 排队等待：
+      
+        主要用来流控脉冲流量，需要设置将阈值模式设置为QPS才能生效。这种方式严格控制了请求通过的间隔时间，也即是让请求以均匀的速度通过，对应的是漏桶算法。每秒能处理5个QBS，如果一秒有10个QSB，将通5个QSB，还有5个QSB,将等待5秒中再处理，如果5秒后处理不了，将不处理。
+        
+        ![avatar](./picture/sentinel-流控效果-排队.png)
 
-        匀速器（RuleConstant.CONTROL_BEHAVIOR_RATE_LIMITER）方式。需要设置将阈值模式设置为QPS才能生效。这种方式严格控制了请求通过的间隔时间，也即是让请求以均匀的速度通过，对应的是漏桶算法。
+4. 熔断降级规则
 
-4. SD
+   - 慢调用比例
+
+     慢调用比例(SLOW_ REQUEST RATIO):选择以慢调用比例作为阈值，需要设置允许的慢调用RT (即最大的响应时间)， 请求的响应时间大于该值则统计为慢调用。统计时长内请求数目大于设置的最小请求数目，并且慢调用的比例大于比例阈值，则接下来的熔断时长内请求会自动被熔断。经过熔断时长后熔断器会进入探测恢复状态(HALF-OPEN 状态) ,若接下来的一个请
+     求响应时间小于设置的慢调用RT则结束熔断，若大于设置的慢调用RT则会再次被熔断。
+
+     ![avatar](./picture/sentinel-熔断降级-慢调用比例.png)
+
+   - 
+
+5. 
