@@ -1,0 +1,33 @@
+server:
+  port: 8084
+
+spring:
+  application:
+    name: study-cloud-alibaba-gatewya
+  cloud:
+    nacos:
+      discovery:
+        server-addr: http://localhost:8848
+        register-enabled: true
+    #gateway配置
+    gateway:
+      #是否启动自动识别hacos服务
+      #discovery:
+        #locator:
+          #enabled: true
+      #路由规则
+      routes:
+          # 路由的唯一标识
+        - id: study-cloud-alibaba-product
+          # 需要转发的地址
+          # lb:使用nacos中的本地负载均衡策略
+          uri: lb://study-cloud-alibaba-product
+          # 断言规则（用于路由规则的匹配）
+          predicates:
+            - Path=/study-cloud-alibaba-product/**
+          filters:
+            #转发前去除第一层路径
+            - StripPrefix=1
+
+
+

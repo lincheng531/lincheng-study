@@ -24,6 +24,7 @@
         <module>study-redis</module>
         <module>study-cloud-alibaba-product</module>
         <module>study-cloud-alibaba-consumer</module>
+        <module>study-cloud-alibaba-gateway</module>
     </modules>
 
     <properties>
@@ -54,77 +55,66 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter</artifactId>
-            <!-- <version>${spring.boot.version}</version>-->
         </dependency>
 
         <!--支持全栈式Web开发，包含Tomcat、restful、springMVC的web应用程序的 starter-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
-            <version>${spring.boot.version}</version>
         </dependency>
 
         <!--redis-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-redis</artifactId>
-            <version>${spring.boot.version}</version>
         </dependency>
 
         <!--测试依赖-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
-            <version>${spring.boot.version}</version>
         </dependency>
 
         <!--缓存-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-cache</artifactId>
-            <version>${spring.boot.version}</version>
         </dependency>
 
         <!--注册中心nacos-->
         <dependency>
             <groupId>com.alibaba.cloud</groupId>
             <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
-            <version>${spring.cloud.alibaba.version}</version>
         </dependency>
 
         <!--配置中心nacos-->
         <dependency>
             <groupId>com.alibaba.cloud</groupId>
             <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
-            <version>${spring.cloud.alibaba.version}</version>
         </dependency>
 
         <!--远程调用dubbo-->
         <dependency>
             <groupId>com.alibaba.cloud</groupId>
             <artifactId>spring-cloud-starter-dubbo</artifactId>
-            <version>${spring.cloud.alibaba.version}</version>
         </dependency>
 
         <!--消息队列rocketmq-->
         <dependency>
             <groupId>com.alibaba.cloud</groupId>
             <artifactId>spring-cloud-starter-stream-rocketmq</artifactId>
-            <version>${spring.cloud.alibaba.version}</version>
         </dependency>
 
         <!--事务seata-->
         <dependency>
             <groupId>com.alibaba.cloud</groupId>
             <artifactId>spring-cloud-starter-alibaba-seata</artifactId>
-            <version>${spring.cloud.alibaba.version}</version>
         </dependency>
 
         <!--流控sentinel-->
         <dependency>
             <groupId>com.alibaba.cloud</groupId>
             <artifactId>spring-cloud-starter-alibaba-sentinel</artifactId>
-            <version>${spring.cloud.alibaba.version}</version>
         </dependency>
 
         <!--sentinel配置持久化-->
@@ -138,6 +128,12 @@
             <artifactId>spring-cloud-alibaba-sentinel-gateway</artifactId>
         </dependency>
 -->
+
+        <!--网关gateway-->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-gateway</artifactId>
+        </dependency>
 
         <!--
             redisson
@@ -226,6 +222,17 @@
     <!--版本控制-->
     <dependencyManagement>
         <dependencies>
+
+            <!--spring boot 版本管理-->
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>${spring.boot.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <!--spring cloud alibaba 版本管理-->
             <dependency>
                 <groupId>com.alibaba.cloud</groupId>
                 <artifactId>spring-cloud-alibaba-dependencies</artifactId>
@@ -233,6 +240,16 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+
+            <!--spring cloud 版本管理-->
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dependencies</artifactId>
+                <version>${spring.cloud.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
         </dependencies>
     </dependencyManagement>
 
