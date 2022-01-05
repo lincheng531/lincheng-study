@@ -709,5 +709,172 @@ dubbo:
 
    [整合-官方文档](https://github.com/alibaba/Sentinel/wiki/%E4%B8%BB%E6%B5%81%E6%A1%86%E6%9E%B6%E7%9A%84%E9%80%82%E9%85%8D#dubbo) 
 
-## 六、网关（gateway）
+## 七、网关（gateway）
 
+1. 整合
+
+   - 添加依赖
+
+     ```xml
+     		<dependency>
+                 <groupId>org.springframework.cloud</groupId>
+                 <artifactId>spring-cloud-starter-gateway</artifactId>
+             </dependency>
+     ```
+
+   - yml配置
+
+     ```yaml
+     spring:
+       #注册服务
+       cloud:
+         nacos:
+           discovery:
+             server-addr: http://localhost:8848
+             register-enabled: true
+         #gateway配置
+         gateway:
+           #是否启动自动识别 nacos服务
+           #discovery:
+             #locator:
+               #enabled: true
+           #路由规则
+           routes:
+               # 路由的唯一标识
+             - id: study-cloud-alibaba-product
+               # 需要转发的地址
+               # lb:使用nacos中的本地负载均衡策略
+               uri: lb://study-cloud-alibaba-product
+               # 断言规则（用于路由规则的匹配）
+               predicates:
+                 - Path=/study-cloud-alibaba-product/**
+               filters:
+                 #转发前去除第一层路径
+                 - StripPrefix=1
+     
+     ```
+
+2. Predicate（断言规则）
+
+   - 通过时间匹配
+
+     - After:当前时间在设置的时间之后，才会转发，在这之前不进行转发
+     - Before:当前时间在设置的时间之前，才会转发，在这之前不进行转发
+     - Between:当前时间在设置的时间之间，才会转发，在这之前不进行转发
+
+     ```yaml
+     spring:
+       cloud:
+         #gateway配置
+         gateway:
+           #路由规则
+           routes:
+             - id: study-cloud-alibaba-product
+               uri: lb://study-cloud-alibaba-product
+               predicates:
+                 # 当前时间在设置的时间之后，才会转发，在这之前不进行转发
+                 - After=2021-01-20T06:06:06+08:00[Asia/Shanghai]
+                 # 当前时间在设置的时间之前，才会转发，在这之前不进行转发
+                 - Before=2022-01-20T06:06:06+08:00[Asia/Shanghai]
+                 #  当前时间在设置的时间之间，才会转发，在这之前不进行转发
+                 - Between=2018-01-20T06:06:06+08:00[Asia/Shanghai],2023-01-20T06:06:06+08:00[Asia/Shanghai]
+              
+     ```
+
+   - 通过 Cookie 匹配
+
+     Cookie Route Predicate 可以接收两个参数，一个是 Cookie name , 一个是正则表达式，路由规则会通过获取对应的 Cookie name 值和正则表达式去匹配，如果匹配上就会执行路由，如果没有匹配上则不执行。
+
+     ```yaml
+     spring:
+       cloud:
+         gateway:
+           routes:
+            - id: cookie_route
+              uri: http://ityouknow.com
+              predicates:
+              - Cookie=ityouknow, kee.e
+     ```
+
+   - Host Route Predicate 接收一组参数，一组匹配的域名列表，这个模板是一个 ant 分隔的模板，用`.`号作为分隔符。它通过参数中的主机地址作为匹配规则。
+
+     ```yaml
+     spring:
+       cloud:
+         gateway:
+           routes:
+           - id: host_route
+             uri: http://ityouknow.com
+             predicates:
+             - Host=**.ityouknow.com
+     ```
+
+   - 通过请求方式匹配
+
+     可以通过是 POST、GET、PUT、DELETE 等不同的请求方式来进行路由。
+
+     ```yaml
+     spring:
+       cloud:
+         gateway:
+           routes:
+           - id: method_route
+             uri: http://ityouknow.com
+             predicates:
+             - Method=GET,POST
+     ```
+
+   - 通过请求路径匹配
+
+     Path Route Predicate 接收一个匹配路径的参数来判断是否走路由；如果请求路径符合要求，则此路由将匹配，例如：/foo/1 或者 /foo/bar。
+
+     ```yaml
+     spring:
+       cloud:
+         gateway:
+           routes:
+           - id: host_route
+             uri: http://ityouknow.com
+             predicates:
+             - Path=/foo/{segment}
+     ```
+
+   - 通过请求参数匹配
+
+     Query Route Predicate 支持传入两个参数，一个是属性名一个为属性值，属性值可以是正则表达式。
+
+     ```yaml
+     spring:
+       cloud:
+         gateway:
+           routes:
+           - id: query_route
+             uri: http://ityouknow.com
+             predicates:
+             - Query=smile
+     ```
+
+   - 通过请求 ip 地址进行匹配
+
+     Predicate 也支持通过设置某个 ip 区间号段的请求才会路由，RemoteAddr Route Predicate 接受 cidr 符号 (IPv4 或 IPv6) 字符串的列表(最小大小为 1)，例如 192.168.0.1/16 (其中 192.168.0.1 是 IP 地址，16 是子网掩码)。
+
+     ```yaml
+     spring:
+       cloud:
+         gateway:
+           routes:
+           - id: remoteaddr_route
+             uri: http://ityouknow.com
+             predicates:
+             - RemoteAddr=192.168.1.1/24
+     ```
+
+3. filters（过滤器） 
+
+   - AddRequestHeader 过滤器
+   - AddRequestParameter 添加参数过滤器
+   -  Addresponseheader 过滤器
+   -  DedupeResponseHeader 去重响应过滤器
+   - 默认过滤器
+
+   

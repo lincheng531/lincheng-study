@@ -22,12 +22,21 @@ spring:
           # 需要转发的地址
           # lb:使用nacos中的本地负载均衡策略
           uri: lb://study-cloud-alibaba-product
-          # 断言规则（用于路由规则的匹配）
+          # 断言规则（用于路由规则的匹配）Predicate 为了实现一组匹配规则，方便让请求过来找到对应的 Route 进行处理
           predicates:
             - Path=/study-cloud-alibaba-product/**
+            # 当前时间在设置的时间之后，才会转发，在这之前不进行转发
+            #- After=2021-01-20T06:06:06+08:00[Asia/Shanghai]
+            # 当前时间在设置的时间之前，才会转发，在这之前不进行转发
+            #- Before=2022-01-20T06:06:06+08:00[Asia/Shanghai]
+            #  当前时间在设置的时间之间，才会转发，在这之前不进行转发
+            #- Between=2018-01-20T06:06:06+08:00[Asia/Shanghai],2023-01-20T06:06:06+08:00[Asia/Shanghai]
+            #通过请求方式匹配
+            #- Method=GET,POST
           filters:
             #转发前去除第一层路径
             - StripPrefix=1
+
 
 
 
