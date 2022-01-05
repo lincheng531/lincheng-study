@@ -11,7 +11,7 @@ spring:
         register-enabled: true
     #gateway配置
     gateway:
-      #是否启动自动识别hacos服务
+      #是否启动自动识别 nacos服务
       #discovery:
         #locator:
           #enabled: true
