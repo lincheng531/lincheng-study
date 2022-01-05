@@ -21,7 +21,6 @@
 
     <modules>
         <module>study-common</module>
-        <module>study-redis</module>
         <module>study-cloud-alibaba-product</module>
         <module>study-cloud-alibaba-consumer</module>
         <module>study-cloud-alibaba-gateway</module>
