@@ -3,6 +3,9 @@ server:
 
 
 spring:
+  application:
+    #应用名称
+    name: study-cloud-alibaba-product
   datasource:
     username: root
     password: 123456
@@ -27,9 +30,6 @@ spring:
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
     time-zone: GMT+8
-  application:
-    #应用名称
-    name: study-cloud-alibaba-product
   cloud:
     nacos:
       discovery:
