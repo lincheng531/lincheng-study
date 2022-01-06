@@ -9,6 +9,14 @@ spring:
       discovery:
         server-addr: http://localhost:8848
         register-enabled: true
+    #sentinel配置
+    sentinel:
+      transport:
+        dashboard: http://localhost:8858
+      #scg:
+        #fallback:
+          #mode: response
+          #response-body: "{'resultCode':'901','resultMsg':'接口限流了gateway-yml'}"
     #gateway配置
     gateway:
       #是否启动自动识别 nacos服务
@@ -36,7 +44,6 @@ spring:
           filters:
             #转发前去除第一层路径
             - StripPrefix=1
-
 
 
 

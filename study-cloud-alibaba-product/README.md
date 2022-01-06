@@ -209,7 +209,7 @@ dubbo:
    - 关闭broker
 
      ```
-     mqshutdown.cmd broke
+     mqshutdown.cmd broker
      ```
 
    - 关闭namesrv
@@ -877,4 +877,140 @@ dubbo:
    -  DedupeResponseHeader 去重响应过滤器
    - 默认过滤器
 
-   
+4. 整合sentinel
+
+   - 添加依赖
+
+     ```xml
+             <!--流控sentinel-->
+             <dependency>
+                 <groupId>com.alibaba.cloud</groupId>
+                 <artifactId>spring-cloud-starter-alibaba-sentinel</artifactId>
+             </dependency>
+     
+             <!--sentinel整合gateway-->
+             <dependency>
+                 <groupId>com.alibaba.cloud</groupId>
+                 <artifactId>spring-cloud-alibaba-sentinel-gateway</artifactId>
+             </dependency>
+     ```
+
+   - 添加sentinel配置
+
+     ```yaml
+     spring:
+       cloud:
+         sentinel:
+           transport:
+             dashboard: http://localhost:8858
+     ```
+
+   - 网关流控
+
+     api类型：有现种，一种配置中的routes:id，一种为自定义的api分组
+
+     匹配模式：精确（完全匹配），字串（存在，类似于like）,正则（匹配正则表达式）
+
+     Burst size：可以不控制的次数。
+
+     别的配置与服务流控是一样的。
+
+     ![avatar](./picture/sentinel-gateway-流控规则.png)
+
+   - api管理
+
+     可以自定义请求接口。对请求接口进行分类配置，在网关流控中的API 类型，选择API 分组 ，可做出不同的流控规则。
+
+     ![avatar](./picture/sentinel-gateway-API管理.png)
+
+   - 降级规则，系统规则与服务流控是一样的。
+
+5. gateway全局异常处理
+
+   两种配置方法
+
+   - config
+
+     ```java
+     package com.lincheng.study.config;
+     
+     import com.alibaba.csp.sentinel.adapter.gateway.sc.callback.BlockRequestHandler;
+     import com.alibaba.csp.sentinel.adapter.gateway.sc.callback.GatewayCallbackManager;
+     import com.alibaba.csp.sentinel.slots.block.authority.AuthorityException;
+     import com.alibaba.csp.sentinel.slots.block.degrade.DegradeException;
+     import com.alibaba.csp.sentinel.slots.block.flow.FlowException;
+     import com.alibaba.csp.sentinel.slots.block.flow.param.ParamFlowException;
+     import com.alibaba.csp.sentinel.slots.system.SystemBlockException;
+     import org.springframework.context.annotation.Configuration;
+     import org.springframework.http.HttpStatus;
+     import org.springframework.http.MediaType;
+     import org.springframework.web.reactive.function.BodyInserters;
+     import org.springframework.web.reactive.function.server.ServerResponse;
+     import org.springframework.web.server.ServerWebExchange;
+     import reactor.core.publisher.Mono;
+     
+     import javax.annotation.PostConstruct;
+     import java.util.HashMap;
+     
+     /**
+      * @description:
+      * @author: linCheng
+      * @create: 2022-01-06 15:58
+      **/
+     @Configuration
+     public class GatewayConfig {
+     
+         @PostConstruct
+         public void init(){
+             BlockRequestHandler blockRequestHandler = new BlockRequestHandler() {
+                 @Override
+                 public Mono<ServerResponse> handleRequest(ServerWebExchange serverWebExchange, Throwable throwable) {
+     
+                     HashMap<Object, Object> result = new HashMap<>();
+     
+                     if (throwable instanceof FlowException) {
+                         result.put("resultCode","901");
+                         result.put("resultMsg","接口限流了gateway");
+                     } else if (throwable instanceof DegradeException) {
+                         result.put("resultCode","902");
+                         result.put("resultMsg","服务降级了gateway");
+                     } else if (throwable instanceof ParamFlowException) {
+                         result.put("resultCode","903");
+                         result.put("resultMsg","热点参数限流了gateway");
+                     } else if (throwable instanceof SystemBlockException) {
+                         result.put("resultCode","904");
+                         result.put("resultMsg","触发系统保护规则了gateway");
+                     } else if (throwable instanceof AuthorityException) {
+                         result.put("resultCode","905");
+                         result.put("resultMsg","授权规则不通过gateway");
+                     }
+     
+                     // 自定义异常处理
+                     return ServerResponse.status(HttpStatus.OK)
+                             .contentType(MediaType.APPLICATION_JSON)
+                             .body(BodyInserters.fromValue(result));
+     
+                 }
+             };
+     
+             GatewayCallbackManager.setBlockHandler(blockRequestHandler);
+         }
+     }
+     
+     ```
+
+   - yml
+
+     ```yaml
+     spring:
+       cloud:
+         sentinel:
+           scg:
+             fallback:
+               mode: response
+               response-body: "{'resultCode':'901','resultMsg':'接口限流了gateway-yml'}"
+     ```
+
+     
+
+6. 手动阀
