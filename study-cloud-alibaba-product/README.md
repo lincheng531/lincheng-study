@@ -1008,9 +1008,6 @@ dubbo:
            scg:
              fallback:
                mode: response
-               response-body: "{'resultCode':'901','resultMsg':'接口限流了gateway-yml'}"
+               response-body: "{'resultCode':'901','resultMsg':'接口限流了gateway-yml'}
      ```
 
-     
-
-6. 手动阀
