@@ -80,7 +80,7 @@ public class DateUtils {
      */
     public static Date stringToDate(String date, String pattern) {
         LocalDate localDate = LocalDate.parse(date, DateTimeFormatter.ofPattern(pattern));
-        return  localDateToDate(localDate);
+        return localDateToDate(localDate);
     }
 
 
@@ -297,7 +297,7 @@ public class DateUtils {
      */
     public static LocalDateTime stringToLocalDateTime(String date, String pattern) {
         LocalDate localDate = LocalDate.parse(date, DateTimeFormatter.ofPattern(pattern));
-        return  localDateToLocalDateTime(localDate);
+        return localDateToLocalDateTime(localDate);
     }
 
 
@@ -339,7 +339,7 @@ public class DateUtils {
      * @param: pattern
      * @Return: java.time.LocalDate
      */
-    public static LocalDate stringToLocalDate(String date ,String pattern) {
+    public static LocalDate stringToLocalDate(String date, String pattern) {
         return LocalDate.parse(date, DateTimeFormatter.ofPattern(pattern));
     }
 
@@ -351,7 +351,7 @@ public class DateUtils {
      * @param: pattern
      * @Return: java.lang.String
      */
-    public static String localDateToString(LocalDate date ,String pattern) {
+    public static String localDateToString(LocalDate date, String pattern) {
         DateTimeFormatter fmt = DateTimeFormatter.ofPattern(pattern);
         return date.format(fmt);
     }
@@ -369,7 +369,7 @@ public class DateUtils {
         return dateToLocalDate(localDateTimeToDate(LocalDateTime.ofEpochSecond(time / 1000, 0, ZoneOffset.ofHours(8))));
     }
 
-    
+
     /**
      * @Description: localDate To Timestamp
      * @author: linCheng
@@ -377,7 +377,7 @@ public class DateUtils {
      * @param: localDate
      * @Return: java.sql.Timestamp
      */
-    public static Timestamp localDateToTimestamp(LocalDate localDate){
+    public static Timestamp localDateToTimestamp(LocalDate localDate) {
         long timestamp = localDate.atStartOfDay(ZoneOffset.ofHours(8)).toInstant().toEpochMilli();
         return new Timestamp(timestamp);
     }
@@ -402,7 +402,7 @@ public class DateUtils {
      * @param: localDateTime
      * @Return: java.time.LocalDate
      */
-    public static LocalDate localDateTimeToLocalDate(LocalDateTime localDateTime){
+    public static LocalDate localDateTimeToLocalDate(LocalDateTime localDateTime) {
         return localDateTime.toLocalDate();
     }
 
