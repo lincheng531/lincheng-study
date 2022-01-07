@@ -15,15 +15,15 @@ import java.util.Date;
  **/
 public class DateUtils {
 
-    private static String YYYYMMDDHHMMSS = "yyyy-MM-dd HH:mm:ss";
+    public static final String YYYYMMDDHHMMSS = "yyyy-MM-dd HH:mm:ss";
 
-    private static String YYYYMMDDHHMM = "yyyy-MM-dd HH:mm";
+    public static final String YYYYMMDDHHMM = "yyyy-MM-dd HH:mm";
 
-    private static String YYYYMMDDHH = "yyyy-MM-dd HH";
+    public static final String YYYYMMDDHH = "yyyy-MM-dd HH";
 
-    private static String YYYYMMDD = "yyyy-MM-dd";
+    public static final String YYYYMMDD = "yyyy-MM-dd";
 
-    private static String YYYYMM = "yyyy-MM";
+    public static final String YYYYMM = "yyyy-MM";
 
 
     /**
@@ -79,9 +79,8 @@ public class DateUtils {
      * @Return: java.util.Date
      */
     public static Date stringToDate(String date, String pattern) {
-        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(pattern);
-        LocalDateTime localDateTime = LocalDateTime.parse(date, dateTimeFormatter);
-        return localDateTimeToDate(localDateTime);
+        LocalDate localDate = LocalDate.parse(date, DateTimeFormatter.ofPattern(pattern));
+        return  localDateToDate(localDate);
     }
 
 
@@ -297,7 +296,8 @@ public class DateUtils {
      * @Return: java.time.LocalDateTime
      */
     public static LocalDateTime stringToLocalDateTime(String date, String pattern) {
-        return LocalDateTime.parse(date, DateTimeFormatter.ofPattern(pattern));
+        LocalDate localDate = LocalDate.parse(date, DateTimeFormatter.ofPattern(pattern));
+        return  localDateToLocalDateTime(localDate);
     }
 
 
@@ -369,7 +369,7 @@ public class DateUtils {
         return dateToLocalDate(localDateTimeToDate(LocalDateTime.ofEpochSecond(time / 1000, 0, ZoneOffset.ofHours(8))));
     }
 
-
+    
     /**
      * @Description: localDate To Timestamp
      * @author: linCheng
@@ -380,6 +380,30 @@ public class DateUtils {
     public static Timestamp localDateToTimestamp(LocalDate localDate){
         long timestamp = localDate.atStartOfDay(ZoneOffset.ofHours(8)).toInstant().toEpochMilli();
         return new Timestamp(timestamp);
+    }
+
+
+    /**
+     * @Description: LocalDate To LocalDateTime
+     * @author: linCheng
+     * @Date: 2022/1/7 15:24
+     * @param: localDate
+     * @Return: java.time.LocalDateTime
+     */
+    public static LocalDateTime localDateToLocalDateTime(LocalDate localDate) {
+        return localDate.atTime(LocalTime.now());
+    }
+
+
+    /**
+     * @Description: LocalDateTime To LocalDate
+     * @author: linCheng
+     * @Date: 2022/1/7 15:24
+     * @param: localDateTime
+     * @Return: java.time.LocalDate
+     */
+    public static LocalDate localDateTimeToLocalDate(LocalDateTime localDateTime){
+        return localDateTime.toLocalDate();
     }
 
 
