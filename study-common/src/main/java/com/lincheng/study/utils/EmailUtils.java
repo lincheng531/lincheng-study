@@ -46,7 +46,7 @@ public class EmailUtils {
      * @param: files 附件
      * @Return: java.lang.Boolean
      */
-    public static Boolean sendAttachmentMail(String fromEmail, List<String> toUser, String subject, String content, List<File> files) {
+    public static Boolean sendMail(String fromEmail, List<String> toUser, String subject, String content, List<File> files) {
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
         try {
 
@@ -75,23 +75,33 @@ public class EmailUtils {
     }
 
 
-    public static JavaMailSenderImpl getJavaMailSenderImpl(){
-
+    public static JavaMailSenderImpl getJavaMailSenderImpl(String host,
+                                                           String encoding,
+                                                           String username,
+                                                           String password) {
         JavaMailSenderImpl sender = new JavaMailSenderImpl();
-        sender.setHost("smtp.qq.com");
-        sender.setDefaultEncoding("UTF-8");
-        sender.setUsername("2826117968@qq.com");
-        sender.setPassword("gvkpgdixvuiudfhf");
-        Properties p = new Properties();
-        p.setProperty("mail.smtp.auth", "true");
-        sender.setJavaMailProperties(p);
+        sender.setHost(host);
+        sender.setDefaultEncoding(encoding);
+        sender.setUsername(username);
+        sender.setPassword(password);
+        Properties properties = new Properties();
+        properties.setProperty("mail.smtp.auth", "true");
+        sender.setJavaMailProperties(properties);
         return sender;
     }
 
 
-    public static Boolean sendMail(String fromEmail, List<String> toUser, String subject, String content, List<File> files) {
+    public static Boolean sendMail(String fromEmail,
+                                   List<String> toUser,
+                                   String subject,
+                                   String content,
+                                   List<File> files,
+                                   String host,
+                                   String encoding,
+                                   String username,
+                                   String password) {
 
-        JavaMailSenderImpl mailSender = getJavaMailSenderImpl();
+        JavaMailSenderImpl mailSender = getJavaMailSenderImpl(host, encoding, username, password);
 
         MimeMessage mimeMessage = mailSender.createMimeMessage();
 
@@ -119,10 +129,6 @@ public class EmailUtils {
         }
 
         return true;
-    }
-
-    public static void main(String[] args){
-        sendMail("2826117968@qq.com", Arrays.asList("924093347@qq.com", "654014090@qq.com"), "测试邮箱-subject", "测试邮箱", null);
     }
 
 }
