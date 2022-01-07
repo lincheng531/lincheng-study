@@ -49,6 +49,12 @@
             <artifactId>spring-boot-starter-cache</artifactId>
         </dependency>
 
+        <!--邮箱-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-mail</artifactId>
+        </dependency>
+
         <!--注册中心nacos-->
         <dependency>
             <groupId>com.alibaba.cloud</groupId>

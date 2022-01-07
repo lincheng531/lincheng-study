@@ -11,6 +11,15 @@ spring:
     password: 123456
     url: jdbc:mysql://127.0.0.1:3306/consumer?useUnicode=yes&characterEncoding=UTF-8&useSSL=false&serverTimezone=Asia/Shanghai
     driver-class-name: com.mysql.cj.jdbc.Driver
+  mail:
+    #邮件协议smtp
+    host: smtp.qq.com
+    #发送者的邮件的用户名
+    username: 2826117968@qq.com
+    #使用的编码
+    default-encoding: utf-8
+    #移动端客户授权码(在邮箱中设置)
+    password: gvkpgdixvuiudfhf
   redis:
     host: 127.0.0.1
     port: 6379
