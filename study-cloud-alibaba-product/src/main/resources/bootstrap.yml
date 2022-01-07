@@ -17,7 +17,7 @@ spring:
     #发送者的邮件的用户名
     username: 2826117968@qq.com
     #使用的编码
-    default-encoding: utf-8
+    default-encoding: UTF-8
     #移动端客户授权码(在邮箱中设置)
     password: gvkpgdixvuiudfhf
   redis:

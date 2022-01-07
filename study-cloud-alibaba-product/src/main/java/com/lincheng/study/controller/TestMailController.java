@@ -17,6 +17,7 @@ public class TestMailController {
 
     @RequestMapping("/sendAttachmentMail")
     public Object sendAttachmentMail() {
-        return EmailUtils.sendAttachmentMail("2826117968@qq.com", Arrays.asList("924093347@qq.com", "654014090@qq.com"), "测试邮箱-subject", "测试邮箱", null);
+        EmailUtils.sendAttachmentMail("2826117968@qq.com", Arrays.asList("924093347@qq.com", "654014090@qq.com"), "测试邮箱-subject", "测试邮箱", null);
+        return true;
     }
 }
