@@ -70,7 +70,26 @@
    systemctl status docker
    ```
 
-#### 2.3 docker 命令
+#### 2.2 配置阿里云镜像加速
+
+[阿里云官方文档](https://cr.console.aliyun.com/cn-hangzhou/instances/mirrors) 
+
+```
+sudo mkdir -p /etc/docker
+sudo tee /etc/docker/daemon.json <<-'EOF'
+{
+  "registry-mirrors": ["https://8z6fkgsn.mirror.aliyuncs.com"]
+}
+EOF
+sudo systemctl daemon-reload
+sudo systemctl restart docker
+```
+
+#### 2.3 安装jdk1.8
+
+
+
+#### 2.4 docker 命令
 
 1. 查看正在运行的容器
 
@@ -141,7 +160,7 @@
 12. 删除镜像
 
     ```
-    docker rmi  镜像名称 or ID
+    docker rmi 镜像名称 or ID
     ```
     
 13. 开机启动容器
@@ -151,22 +170,9 @@
     docker update redis --restart=always
     ```
 
-#### 2.2 配置阿里云镜像加速
 
-[阿里云官方文档](https://cr.console.aliyun.com/cn-hangzhou/instances/mirrors) 
 
-```
-sudo mkdir -p /etc/docker
-sudo tee /etc/docker/daemon.json <<-'EOF'
-{
-  "registry-mirrors": ["https://8z6fkgsn.mirror.aliyuncs.com"]
-}
-EOF
-sudo systemctl daemon-reload
-sudo systemctl restart docker
-```
-
-#### 2.3 docker安装mysql
+#### 2.5 docker安装mysql
 
 1. 查看可用的 MySQL 版本
 
@@ -188,7 +194,7 @@ sudo systemctl restart docker
    mkdir -p /home/app/mysql/logs
    ```
 
-4. 放入my.cnf
+4. 新建my.cnf配置文件
 
    ```
    vi /home/app/mysql/conf/my.cnf
@@ -260,4 +266,88 @@ sudo systemctl restart docker
    ```
 
 
-#### 2.4 docker安装redis
+#### 2.6 docker安装redis
+
+1. 下载镜像
+
+   ```
+   docker pull redis
+   ```
+
+2. 创建挂载目录
+
+   ```
+   mkdir -p /home/app/redis/conf
+   mkdir -p /home/app/redis/data
+   ```
+
+3. 新建redis.conf配置文件
+
+   ```
+   touch /home/app/conf/redis.conf
+   ```
+
+   复制以下内容，解决redis持久化
+
+   ```
+   appendonly yes
+   ```
+
+4. 创建启动容器
+
+   ```
+   docker run -p 6379:6379 --name redis -v /home/app/redis/data:/data \
+   -v /home/app/redis/conf/redis.conf:/etc/redis/redis.conf \
+   -d redis redis-server /etc/redis/redis.conf
+   ```
+
+5. 开机自动启动容器
+
+   ```
+   docker update mysql --restart=always
+   ```
+
+#### 2.7 docker安装nacos
+
+1. 下载镜像
+
+   ```
+   docker pull nacos/nacos-server:1.4.2
+   ```
+
+2. 创建挂载目录
+
+   ```
+   mkdir -p /home/app/nacos/data
+   mkdir -p /home/app/nacos/logs
+   mkdir -p /home/app/nacos/conf
+   ```
+
+3. 授权
+
+   ```
+   chmod 777 /home/app/nacos/data
+   chmod 777 /home/app/nacos/logs
+   chmod 777 /home/app/nacos/conf
+   chmod 777 /home/app/nacos
+   ```
+
+4. 新建application.properties配置文件
+
+   ```
+   vi conf/application.properties
+   ```
+
+   复制以下内容，解决nacos配置
+
+   ```
+   
+   ```
+
+5. 创建启动容器
+
+   ```
+   docker run --name nacos -d -p 8848:8848 --privileged=true --restart=always -e JVM_XMS=256m -e JVM_XMX=256m -e MODE=standalone -e PREFER_HOST_MODE=hostname -v /home/app/nacos/logs:/home/nacos/logs -v /home/app/nacos/conf:/home/nacos/conf -v /home/app/nacos/data:/home/nacos/data nacos/nacos-server:1.4.2
+   ```
+
+6. 
