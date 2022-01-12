@@ -87,7 +87,56 @@ sudo systemctl restart docker
 
 #### 2.3 安装jdk1.8
 
+1. 拷贝到指定安装目录
 
+   ```
+   cp -r /root/tools/jdk-8u144-linux-x64.tar.gz /usr/local/java
+   ```
+
+2. 解压操作
+
+   ```
+   #切换到指定目录
+   cd /usr/local/java
+   #解压文件
+   tar -zxvf jdk-8u144-linux-x64.tar.gz   
+   ```
+
+3. 配置环境变量
+
+   ```
+   # 编辑配置文件
+   vim /etc/profile
+   ```
+
+   复制以下内容，加在文件末尾，更新环境变量，
+
+   ```
+   export JAVA_HOME=/usr/local/java/jdk1.8.0_144
+   export JRE_HOME=/$JAVA_HOME/jre
+   export CLASSPATH=.:$JAVA_HOME/jre/lib/rt.jar:$JAVA_HOME/lib/dt.jar:$JAVA_HOME/lib/tools.jar
+   export PATH=$PATH:$JAVA_HOME/bin:$JRE_HOME/bin
+   
+   source /etc/profile
+   ```
+
+4. 检查是否安装成功
+
+   ```
+   # 测试版本号
+   java -version
+   
+   # 返回
+   java version "1.8.0_144"
+   Java(TM) SE Runtime Environment (build 1.8.0_144-b01)
+   Java HotSpot(TM) 64-Bit Server VM (build 25.144-b01, mixed mode)
+   
+   # 查询JAVA_HOME
+   echo $JAVA_HOME
+   
+   # 返回
+   /usr/local/java/jdk1.8.0_144
+   ```
 
 #### 2.4 docker 命令
 
@@ -189,15 +238,15 @@ sudo systemctl restart docker
 3. 创建挂载目录
 
    ```
-   mkdir -p /home/app/mysql/conf
-   mkdir -p /home/app/mysql/data
-   mkdir -p /home/app/mysql/logs
+   mkdir -p /usr/local/mysql/conf
+   mkdir -p /usr/local/mysql/data
+   mkdir -p /usr/local/mysql/logs
    ```
 
 4. 新建my.cnf配置文件
 
    ```
-   vi /home/app/mysql/conf/my.cnf
+   vi /usr/local/mysql/conf/my.cnf
    ```
 
    复制以下内容，为了解决中文乱码问题
@@ -277,14 +326,14 @@ sudo systemctl restart docker
 2. 创建挂载目录
 
    ```
-   mkdir -p /home/app/redis/conf
-   mkdir -p /home/app/redis/data
+   mkdir -p /usr/local/redis/conf
+   mkdir -p /usr/local/redis/data
    ```
 
 3. 新建redis.conf配置文件
 
    ```
-   touch /home/app/conf/redis.conf
+   touch /usr/local/conf/redis.conf
    ```
 
    复制以下内容，解决redis持久化
@@ -296,8 +345,8 @@ sudo systemctl restart docker
 4. 创建启动容器
 
    ```
-   docker run -p 6379:6379 --name redis -v /home/app/redis/data:/data \
-   -v /home/app/redis/conf/redis.conf:/etc/redis/redis.conf \
+   docker run -p 6379:6379 --name redis -v /usr/local/redis/data:/data \
+   -v /usr/local/redis/conf/redis.conf:/etc/redis/redis.conf \
    -d redis redis-server /etc/redis/redis.conf
    ```
 
@@ -318,18 +367,18 @@ sudo systemctl restart docker
 2. 创建挂载目录
 
    ```
-   mkdir -p /home/app/nacos/data
-   mkdir -p /home/app/nacos/logs
-   mkdir -p /home/app/nacos/conf
+   mkdir -p /usr/local/nacos/data
+   mkdir -p /usr/local/nacos/logs
+   mkdir -p /usr/local/nacos/conf
    ```
 
 3. 授权
 
    ```
-   chmod 777 /home/app/nacos/data
-   chmod 777 /home/app/nacos/logs
-   chmod 777 /home/app/nacos/conf
-   chmod 777 /home/app/nacos
+   chmod 777 /usr/local/nacos/data
+   chmod 777 /usr/local/nacos/logs
+   chmod 777 /usr/local/nacos/conf
+   chmod 777 /usr/local/nacos
    ```
 
 4. 新建application.properties配置文件
@@ -347,7 +396,7 @@ sudo systemctl restart docker
 5. 创建启动容器
 
    ```
-   docker run --name nacos -d -p 8848:8848 --privileged=true --restart=always -e JVM_XMS=256m -e JVM_XMX=256m -e MODE=standalone -e PREFER_HOST_MODE=hostname -v /home/app/nacos/logs:/home/nacos/logs -v /home/app/nacos/conf:/home/nacos/conf -v /home/app/nacos/data:/home/nacos/data nacos/nacos-server:1.4.2
+   docker run --name nacos -d -p 8848:8848 --privileged=true --restart=always -e JVM_XMS=256m -e JVM_XMX=256m -e MODE=standalone -e PREFER_HOST_MODE=hostname -v /usr/local/nacos/logs:/home/nacos/logs -v /usr/local/nacos/conf:/home/nacos/conf -v /usr/local/nacos/data:/home/nacos/data nacos/nacos-server:1.4.2
    ```
 
 6. 
