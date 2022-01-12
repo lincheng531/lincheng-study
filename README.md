@@ -85,60 +85,7 @@ sudo systemctl daemon-reload
 sudo systemctl restart docker
 ```
 
-#### 2.3 安装jdk1.8
-
-1. 拷贝到指定安装目录
-
-   ```
-   cp -r /root/tools/jdk-8u144-linux-x64.tar.gz /usr/local/java
-   ```
-
-2. 解压操作
-
-   ```
-   #切换到指定目录
-   cd /usr/local/java
-   #解压文件
-   tar -zxvf jdk-8u144-linux-x64.tar.gz   
-   ```
-
-3. 配置环境变量
-
-   ```
-   # 编辑配置文件
-   vim /etc/profile
-   ```
-
-   复制以下内容，加在文件末尾，更新环境变量，
-
-   ```
-   export JAVA_HOME=/usr/local/java/jdk1.8.0_144
-   export JRE_HOME=/$JAVA_HOME/jre
-   export CLASSPATH=.:$JAVA_HOME/jre/lib/rt.jar:$JAVA_HOME/lib/dt.jar:$JAVA_HOME/lib/tools.jar
-   export PATH=$PATH:$JAVA_HOME/bin:$JRE_HOME/bin
-   
-   source /etc/profile
-   ```
-
-4. 检查是否安装成功
-
-   ```
-   # 测试版本号
-   java -version
-   
-   # 返回
-   java version "1.8.0_144"
-   Java(TM) SE Runtime Environment (build 1.8.0_144-b01)
-   Java HotSpot(TM) 64-Bit Server VM (build 25.144-b01, mixed mode)
-   
-   # 查询JAVA_HOME
-   echo $JAVA_HOME
-   
-   # 返回
-   /usr/local/java/jdk1.8.0_144
-   ```
-
-#### 2.4 docker 命令
+#### 2.3 docker 命令
 
 1. 查看正在运行的容器
 
@@ -211,15 +158,66 @@ sudo systemctl restart docker
     ```
     docker rmi 镜像名称 or ID
     ```
-    
-13. 开机启动容器
+
+13. 开机自动启动容器
 
     ```
     docker update mysql --restart=always
     docker update redis --restart=always
     ```
 
+#### 2.4 安装jdk1.8
 
+1. 拷贝到指定安装目录
+
+   ```
+   cp -r /root/tools/jdk-8u144-linux-x64.tar.gz /usr/local/java
+   ```
+
+2. 解压操作
+
+   ```
+   #切换到指定目录
+   cd /usr/local/java
+   #解压文件
+   tar -zxvf jdk-8u144-linux-x64.tar.gz   
+   ```
+
+3. 配置环境变量
+
+   ```
+   # 编辑配置文件
+   vim /etc/profile
+   ```
+
+   复制以下内容，加在文件末尾，更新环境变量，
+
+   ```
+   export JAVA_HOME=/usr/local/java/jdk1.8.0_144
+   export JRE_HOME=/$JAVA_HOME/jre
+   export CLASSPATH=.:$JAVA_HOME/jre/lib/rt.jar:$JAVA_HOME/lib/dt.jar:$JAVA_HOME/lib/tools.jar
+   export PATH=$PATH:$JAVA_HOME/bin:$JRE_HOME/bin
+   
+   source /etc/profile
+   ```
+
+4. 检查是否安装成功
+
+   ```
+   # 测试版本号
+   java -version
+   
+   # 返回
+   java version "1.8.0_144"
+   Java(TM) SE Runtime Environment (build 1.8.0_144-b01)
+   Java HotSpot(TM) 64-Bit Server VM (build 25.144-b01, mixed mode)
+   
+   # 查询JAVA_HOME
+   echo $JAVA_HOME
+   
+   # 返回
+   /usr/local/java/jdk1.8.0_144
+   ```
 
 #### 2.5 docker安装mysql
 
@@ -370,83 +368,350 @@ sudo systemctl restart docker
 
    ```
    mkdir -p /usr/local/nacos/logs/                     
-   mkdir -p /usr/local/nacos/init.d/ 
    ```
 
-3. 新建custom.properties配置文件
+3. 创建启动容器
+
+   下面的命令中的mysql,为了持久化配置
 
    ```
-   vim /usr/local/nacos/init.d/custom.properties
-   ```
-
-   复制以下内容，解决nacos配置
-
-   ```
-   server.contextPath=/nacos
-   server.servlet.contextPath=/nacos
-   server.port=8848
-   
-   spring.datasource.platform=mysql
-   #这里的数据库连接信息更改成我们前面准备好的nacos数据库
-   db.num=1
-   db.url.0=jdbc:mysql://121.5.143.40:3306/nacos?characterEncoding=utf8&connectTimeout=1000&socketTimeout=3000&autoReconnect=true
-   db.user=root
-   db.password=123456
-   
-   
-   nacos.cmdb.dumpTaskInterval=3600
-   nacos.cmdb.eventTaskInterval=10
-   nacos.cmdb.labelTaskInterval=300
-   nacos.cmdb.loadDataAtStart=false
-   
-   management.metrics.export.elastic.enabled=false
-   
-   management.metrics.export.influx.enabled=false
-   
-   
-   server.tomcat.accesslog.enabled=true
-   server.tomcat.accesslog.pattern=%h %l %u %t "%r" %s %b %D %{User-Agent}i
-   
-   
-   nacos.security.ignore.urls=/,/**/*.css,/**/*.js,/**/*.html,/**/*.map,/**/*.svg,/**/*.png,/**/*.ico,/console-fe/public/**,/v1/auth/login,/v1/console/health/**,/v1/cs/**,/v1/ns/**,/v1/cmdb/**,/actuator/**,/v1/console/server/**
-   nacos.naming.distro.taskDispatchThreadCount=1
-   nacos.naming.distro.taskDispatchPeriod=200
-   nacos.naming.distro.batchSyncKeyCount=1000
-   nacos.naming.distro.initDataRatio=0.9
-   nacos.naming.distro.syncRetryDelay=5000
-   nacos.naming.data.warmup=true
-   nacos.naming.expireInstance=true
-   ```
-
-4. 创建启动容器
-
-   ```
-   docker  run \
-   --name nacos -d \
-   -p 8848:8848 \
-   --privileged=true \
-   --restart=always \
-   -e JVM_XMS=256m \
-   -e JVM_XMX=256m \
+   docker run -d \
    -e MODE=standalone \
-   -e PREFER_HOST_MODE=hostname \
+   -e SPRING_DATASOURCE_PLATFORM=mysql \
+   -e MYSQL_SERVICE_HOST=121.5.143.40 \
+   -e MYSQL_SERVICE_PORT=3306 \
+   -e MYSQL_SERVICE_USER='root' \
+   -e MYSQL_SERVICE_PASSWORD='123456' \
+   -e MYSQL_SERVICE_DB_NAME=nacos \
+   -e TIME_ZONE='Asia/Shanghai' \
    -v /usr/local/nacos/logs:/home/nacos/logs \
-   -v /usr/local/nacos/init.d/custom.properties:/home/nacos/init.d/custom.properties \
+   -p 8848:8848 \
+   --name nacos \
+   --restart=always \
    nacos/nacos-server:1.4.2
    ```
 
-5. 确保启动没有错误，可以查看日志
+4. 确保启动没有错误，可以查看日志
 
    ```
    cat /usr/local/nacos/logs/start.out
    ```
 
-6. 配置容器自启动
+5. 配置容器自动启动
 
    ```
    docker update nacos --restart=always
    ```
 
-7. 执行过程
+#### 2.8 docker安装seata
 
-   ![avatar](./picture/docker安装nacos.png)
+1. 下载镜像
+
+   ```
+   docker pull seataio/seata-server:1.3.0
+   ```
+
+2. 创建挂载目录
+
+   ```
+   mkdir /usr/local/seata/conf/config-center/nacos
+   mkdir /usr/local/seata/conf/logs
+   ```
+
+3. 在/usr/local/seata/conf创建配置文件
+
+   - file.conf 
+
+     ```
+     touch /usr/local/seata/conf/file.conf
+     ```
+
+     复制以下内容，设置seata配置
+
+     ```
+     store {
+       
+       mode = "db"
+     
+       db {
+         datasource = "druid"
+         dbType = "mysql"
+         driverClassName = "com.mysql.cj.jdbc.Driver"
+         url = "jdbc:mysql://121.5.143.40:3306/seata"
+         user = "root"
+         password = "123456"
+         minConn = 5
+         maxConn = 30
+         globalTable = "global_table"
+         branchTable = "branch_table"
+         lockTable = "lock_table"
+         queryLimit = 100
+         maxWait = 5000
+       }
+     
+     }
+     ```
+
+   - registry.conf
+
+     ```
+     touch /usr/local/seata/conf/file.conf
+     ```
+
+     复制以下内容，设置seata的服务注册，配置中心的配置
+
+     ```
+     registry {
+      
+       type = "nacos"
+     
+       nacos {
+         application = "seata-server"
+         serverAddr = "121.5.143.40:8848"
+         group = "SEATA_GROUP"
+         namespace = ""
+         cluster = "default"
+         username = "nacos"
+         password = "nacos"
+       }
+      
+     }
+     
+     config {
+     
+       type = "nacos"
+     
+       nacos {
+         serverAddr = "121.5.143.40:8848"
+         namespace = "b9abfd2a-d894-4127-bbf5-136e081aec1f"
+         group = "SEATA_GROUP"
+         username = "nacos"
+         password = "nacos"
+       }
+       
+     }
+     ```
+
+4. 将seata中的config.txt配置信息导入到nacos配置中心
+
+   - 创建config.txt文件
+
+     ```
+     #配置文件
+     touch /usr/local/seata/conf/config-center/config.txt
+     ```
+
+     复制以下内容，设置seata配置
+
+     ```
+     transport.type=TCP
+     transport.server=NIO
+     transport.heartbeat=true
+     transport.enableClientBatchSendRequest=false
+     transport.threadFactory.bossThreadPrefix=NettyBoss
+     transport.threadFactory.workerThreadPrefix=NettyServerNIOWorker
+     transport.threadFactory.serverExecutorThreadPrefix=NettyServerBizHandler
+     transport.threadFactory.shareBossWorker=false
+     transport.threadFactory.clientSelectorThreadPrefix=NettyClientSelector
+     transport.threadFactory.clientSelectorThreadSize=1
+     transport.threadFactory.clientWorkerThreadPrefix=NettyClientWorkerThread
+     transport.threadFactory.bossThreadSize=1
+     transport.threadFactory.workerThreadSize=default
+     transport.shutdown.wait=3
+     service.vgroupMapping.my_test_tx_group=default
+     service.default.grouplist=121.5.143.40:8091
+     service.enableDegrade=false
+     service.disableGlobalTransaction=false
+     client.rm.asyncCommitBufferLimit=10000
+     client.rm.lock.retryInterval=10
+     client.rm.lock.retryTimes=30
+     client.rm.lock.retryPolicyBranchRollbackOnConflict=true
+     client.rm.reportRetryCount=5
+     client.rm.tableMetaCheckEnable=false
+     client.rm.sqlParserType=druid
+     client.rm.reportSuccessEnable=false
+     client.rm.sagaBranchRegisterEnable=false
+     client.tm.commitRetryCount=5
+     client.tm.rollbackRetryCount=5
+     client.tm.degradeCheck=false
+     client.tm.degradeCheckAllowTimes=10
+     client.tm.degradeCheckPeriod=2000
+     store.mode=db
+     store.db.datasource=druid
+     store.db.dbType=mysql
+     store.db.driverClassName=com.mysql.cj.jdbc.Driver
+     store.db.url=jdbc:mysql://121.5.143.40:3306/seata?useUnicode=true
+     store.db.user=root
+     store.db.password=123456
+     store.db.minConn=5
+     store.db.maxConn=30
+     store.db.globalTable=global_table
+     store.db.branchTable=branch_table
+     store.db.queryLimit=100
+     store.db.lockTable=lock_table
+     store.db.maxWait=5000
+     server.recovery.committingRetryPeriod=1000
+     server.recovery.asynCommittingRetryPeriod=1000
+     server.recovery.rollbackingRetryPeriod=1000
+     server.recovery.timeoutRetryPeriod=1000
+     server.maxCommitRetryTimeout=-1
+     server.maxRollbackRetryTimeout=-1
+     server.rollbackRetryTimeoutUnlockEnable=false
+     client.undo.dataValidation=true
+     client.undo.logSerialization=jackson
+     client.undo.onlyCareUpdateColumns=true
+     server.undo.logSaveDays=7
+     server.undo.logDeletePeriod=86400000
+     client.undo.logTable=undo_log
+     client.log.exceptionRate=100
+     transport.serialization=seata
+     transport.compressor=none
+     metrics.enabled=false
+     metrics.registryType=compact
+     metrics.exporterList=prometheus
+     metrics.exporterPrometheusPort=9898
+     ```
+
+   - 创建nacos-config.sh脚本
+
+     ```
+     touch /usr/local/seata/conf/config-center/nacos/nacos-config.sh
+     ```
+
+     复制以下内容，设置脚本
+
+     ```
+     #!/usr/bin/env bash
+     # Copyright 1999-2019 Seata.io Group.
+     #
+     # Licensed under the Apache License, Version 2.0 (the "License");
+     # you may not use this file except in compliance with the License.
+     # You may obtain a copy of the License at、
+     #
+     #      http://www.apache.org/licenses/LICENSE-2.0
+     #
+     # Unless required by applicable law or agreed to in writing, software
+     # distributed under the License is distributed on an "AS IS" BASIS,
+     # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     # See the License for the specific language governing permissions and
+     # limitations under the License.
+     
+     while getopts ":h:p:g:t:u:w:" opt
+     do
+       case $opt in
+       h)
+         host=$OPTARG
+         ;;
+       p)
+         port=$OPTARG
+         ;;
+       g)
+         group=$OPTARG
+         ;;
+       t)
+         tenant=$OPTARG
+         ;;
+       u)
+         username=$OPTARG
+         ;;
+       w)
+         password=$OPTARG
+         ;;
+       ?)
+         echo " USAGE OPTION: $0 [-h host] [-p port] [-g group] [-t tenant] [-u username] [-w password] "
+         exit 1
+         ;;
+       esac
+     done
+     
+     if [[ -z ${host} ]]; then
+         host=localhost
+     fi
+     if [[ -z ${port} ]]; then
+         port=8848
+     fi
+     if [[ -z ${group} ]]; then
+         group="SEATA_GROUP"
+     fi
+     if [[ -z ${tenant} ]]; then
+         tenant=""
+     fi
+     if [[ -z ${username} ]]; then
+         username=""
+     fi
+     if [[ -z ${password} ]]; then
+         password=""
+     fi
+     
+     nacosAddr=$host:$port
+     contentType="content-type:application/json;charset=UTF-8"
+     
+     echo "set nacosAddr=$nacosAddr"
+     echo "set group=$group"
+     
+     failCount=0
+     tempLog=$(mktemp -u)
+     function addConfig() {
+       curl -X POST -H "${contentType}" "http://$nacosAddr/nacos/v1/cs/configs?dataId=$1&group=$group&content=$2&tenant=$tenant&username=$username&password=$password" >"${tempLog}" 2>/dev/null
+       if [[ -z $(cat "${tempLog}") ]]; then
+         echo " Please check the cluster status. "
+         exit 1
+       fi
+       if [[ $(cat "${tempLog}") =~ "true" ]]; then
+         echo "Set $1=$2 successfully "
+       else
+         echo "Set $1=$2 failure "
+         (( failCount++ ))
+       fi
+     }
+     
+     count=0
+     for line in $(cat $(dirname "$PWD")/config.txt | sed s/[[:space:]]//g); do
+       (( count++ ))
+     	key=${line%%=*}
+         value=${line#*=}
+     	addConfig "${key}" "${value}"
+     done
+     
+     echo "========================================================================="
+     echo " Complete initialization parameters,  total-count:$count ,  failure-count:$failCount "
+     echo "========================================================================="
+     
+     if [[ ${failCount} -eq 0 ]]; then
+     	echo " Init nacos config finished, please start seata-server. "
+     else
+     	echo " init nacos config fail. "
+     fi
+     ```
+
+   - 把seata配置信息config.txt导入到nacos中
+
+     ```
+     # 106.15.38.88 为nacos的服务器地址
+     # -t 为命名空间
+     bash nacos-config.sh -h 121.5.143.40 -p 8848 -g STATA_GROPU -t b9abfd2a-d894-4127-bbf5-136e081aec1f -u nacos -w nacos
+     ```
+
+5. 创建启动容器
+
+   ```
+   docker run -d \
+   -p 8091:8091 \
+   -v /usr/local/seata/conf/registry.conf:/seata-server/resources/registry.conf \
+   -v /usr/local/seata/conf/file.conf:/seata-server/resources/file.conf \
+   -v /usr/local/seata/conf/logs:/root/logs \
+   -e SEATA_IP=121.5.143.40 \
+   -e SEATA_PORT=8091 \
+   --name seata \
+   --restart=always \
+   seataio/seata-server:1.3.0
+   ```
+
+6. 配置容器自动启动
+
+   ```
+   docker update seata --restart=always
+   ```
+
+#### 
+
