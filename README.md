@@ -358,6 +358,8 @@ sudo systemctl restart docker
 
 #### 2.7 docker安装nacos
 
+[nacos-docker官方文档](https://github.com/nacos-group/nacos-docker/blob/master/README_ZH.md)
+
 1. 下载镜像
 
    ```
@@ -367,36 +369,84 @@ sudo systemctl restart docker
 2. 创建挂载目录
 
    ```
-   mkdir -p /usr/local/nacos/data
-   mkdir -p /usr/local/nacos/logs
-   mkdir -p /usr/local/nacos/conf
+   mkdir -p /usr/local/nacos/logs/                     
+   mkdir -p /usr/local/nacos/init.d/ 
    ```
 
-3. 授权
+3. 新建custom.properties配置文件
 
    ```
-   chmod 777 /usr/local/nacos/data
-   chmod 777 /usr/local/nacos/logs
-   chmod 777 /usr/local/nacos/conf
-   chmod 777 /usr/local/nacos
-   ```
-
-4. 新建application.properties配置文件
-
-   ```
-   vi conf/application.properties
+   vim /usr/local/nacos/init.d/custom.properties
    ```
 
    复制以下内容，解决nacos配置
 
    ```
+   server.contextPath=/nacos
+   server.servlet.contextPath=/nacos
+   server.port=8848
    
+   spring.datasource.platform=mysql
+   #这里的数据库连接信息更改成我们前面准备好的nacos数据库
+   db.num=1
+   db.url.0=jdbc:mysql://121.5.143.40:3306/nacos?characterEncoding=utf8&connectTimeout=1000&socketTimeout=3000&autoReconnect=true
+   db.user=root
+   db.password=123456
+   
+   
+   nacos.cmdb.dumpTaskInterval=3600
+   nacos.cmdb.eventTaskInterval=10
+   nacos.cmdb.labelTaskInterval=300
+   nacos.cmdb.loadDataAtStart=false
+   
+   management.metrics.export.elastic.enabled=false
+   
+   management.metrics.export.influx.enabled=false
+   
+   
+   server.tomcat.accesslog.enabled=true
+   server.tomcat.accesslog.pattern=%h %l %u %t "%r" %s %b %D %{User-Agent}i
+   
+   
+   nacos.security.ignore.urls=/,/**/*.css,/**/*.js,/**/*.html,/**/*.map,/**/*.svg,/**/*.png,/**/*.ico,/console-fe/public/**,/v1/auth/login,/v1/console/health/**,/v1/cs/**,/v1/ns/**,/v1/cmdb/**,/actuator/**,/v1/console/server/**
+   nacos.naming.distro.taskDispatchThreadCount=1
+   nacos.naming.distro.taskDispatchPeriod=200
+   nacos.naming.distro.batchSyncKeyCount=1000
+   nacos.naming.distro.initDataRatio=0.9
+   nacos.naming.distro.syncRetryDelay=5000
+   nacos.naming.data.warmup=true
+   nacos.naming.expireInstance=true
    ```
 
-5. 创建启动容器
+4. 创建启动容器
 
    ```
-   docker run --name nacos -d -p 8848:8848 --privileged=true --restart=always -e JVM_XMS=256m -e JVM_XMX=256m -e MODE=standalone -e PREFER_HOST_MODE=hostname -v /usr/local/nacos/logs:/home/nacos/logs -v /usr/local/nacos/conf:/home/nacos/conf -v /usr/local/nacos/data:/home/nacos/data nacos/nacos-server:1.4.2
+   docker  run \
+   --name nacos -d \
+   -p 8848:8848 \
+   --privileged=true \
+   --restart=always \
+   -e JVM_XMS=256m \
+   -e JVM_XMX=256m \
+   -e MODE=standalone \
+   -e PREFER_HOST_MODE=hostname \
+   -v /usr/local/nacos/logs:/home/nacos/logs \
+   -v /usr/local/nacos/init.d/custom.properties:/home/nacos/init.d/custom.properties \
+   nacos/nacos-server:1.4.2
    ```
 
-6. 
+5. 确保启动没有错误，可以查看日志
+
+   ```
+   cat /usr/local/nacos/logs/start.out
+   ```
+
+6. 配置容器自启动
+
+   ```
+   docker update nacos --restart=always
+   ```
+
+7. 执行过程
+
+   ![avatar](./picture/docker安装nacos.png)
