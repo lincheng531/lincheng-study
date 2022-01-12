@@ -266,7 +266,7 @@ sudo systemctl restart docker
    !includedir /etc/mysql/conf.d/
    ```
 
-5. 创建启动容器
+5. 创建并启动容器
 
    ```
    docker run --restart=always -d -v /usr/local/mysql/conf/my.cnf:/etc/mysql/my.cnf -v /usr/local/mysql/logs:/logs -v /usr/local/mysql/data/mysql:/var/lib/mysql  -p 3306:3306 --name mysql -e MYSQL_ROOT_PASSWORD=123456 mysql:8.0.18
@@ -340,7 +340,7 @@ sudo systemctl restart docker
    appendonly yes
    ```
 
-4. 创建启动容器
+4. 创建并启动容器
 
    ```
    docker run -p 6379:6379 --name redis -v /usr/local/redis/data:/data \
@@ -351,7 +351,7 @@ sudo systemctl restart docker
 5. 开机自动启动容器
 
    ```
-   docker update mysql --restart=always
+   docker update redis --restart=always
    ```
 
 #### 2.7 docker安装nacos
@@ -370,7 +370,7 @@ sudo systemctl restart docker
    mkdir -p /usr/local/nacos/logs/                     
    ```
 
-3. 创建启动容器
+3. 创建并启动容器
 
    下面的命令中的mysql,为了持久化配置
 
@@ -692,7 +692,7 @@ sudo systemctl restart docker
      bash nacos-config.sh -h 121.5.143.40 -p 8848 -g STATA_GROPU -t b9abfd2a-d894-4127-bbf5-136e081aec1f -u nacos -w nacos
      ```
 
-5. 创建启动容器
+5. 创建并启动容器
 
    ```
    docker run -d \
@@ -713,5 +713,31 @@ sudo systemctl restart docker
    docker update seata --restart=always
    ```
 
-#### 
+#### 2.9 docker安装sentinel
+
+1. 下载镜像
+
+   要使用sentinel:1.8.1；因1.8.1为最新版本，所以使用latest
+
+   ```
+   docker pull bladex/sentinel-dashboard:latest
+   ```
+
+2. 创建并启动容器
+
+   ```
+   docker run -d \
+   -p 8858:8858 \
+   --name sentinel \
+   --restart=always \
+   bladex/sentinel-dashboard:latest
+   ```
+
+3. 配置容器自动启动
+
+   ```
+   docker update sentinel --restart=always
+   ```
+
+
 
