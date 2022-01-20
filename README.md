@@ -275,14 +275,15 @@ sudo systemctl restart docker
    参数解释
 
    ```
-   --restart=always                                           -> 开机启动容器,容器异常自动重启
-   -d                                                         -> 以守护进程的方式启动容器
-   -v /usr/local/mysql/conf/my.cnf:/etc/mysql/my.cnf          -> 映射配置文件
-   -v /usr/local/mysql/logs:/logs                             -> 映射日志
-   -v /usr/local/mysql/data/mysql:/var/lib/mysql              -> 映射数据
-   -p 3306:3306                                               -> 绑定宿主机端口
-   --name mysql                                               -> 指定容器名称
-   -e MYSQL_ROOT_PASSWORD=123456                              -> 写入配置root密码
+   --restart=always                                   -> 开机启动容器,容器异常自动重启
+   -d                                                 -> 以守护进程的方式启动容器
+   -v /usr/local/mysql/conf/my.cnf:/etc/mysql/my.cnf  -> 映射配置文件
+   -v /usr/local/mysql/logs:/logs                     -> 映射日志
+   -v /usr/local/mysql/data/mysql:/var/lib/mysql      -> 映射数据
+   -p 3306:3306                                       -> 绑定宿主机端口
+   --privileged=true			->容器内的root拥有真正root权限，否则容器内root只是外部普通用户权限
+   --name mysql                                       -> 指定容器名称
+   -e MYSQL_ROOT_PASSWORD=123456                      -> 写入配置root密码
    ```
 
 6. 修改mysql
@@ -318,7 +319,7 @@ sudo systemctl restart docker
 1. 下载镜像
 
    ```
-   docker pull redis
+   docker pull redis:6.0.16
    ```
 
 2. 创建挂载目录
@@ -343,9 +344,20 @@ sudo systemctl restart docker
 4. 创建并启动容器
 
    ```
-   docker run -p 6379:6379 --name redis -v /usr/local/redis/data:/data \
+   docker run -d \
+   -v /usr/local/redis/data:/data \
    -v /usr/local/redis/conf/redis.conf:/etc/redis/redis.conf \
-   -d redis redis-server /etc/redis/redis.conf
+   -p 6379:6379 \
+   --name redis \
+   --restart=always \
+   --privileged=true \
+   redis:6.0.16 redis-server /etc/redis/redis.conf
+   ```
+
+   配置说明
+
+   ```
+   redis:6.0.16 redis-server /etc/redis/redis.conf    ->  指定配置文件启动redis-server进程
    ```
 
 5. 开机自动启动容器
@@ -372,13 +384,17 @@ sudo systemctl restart docker
 
 3. 创建并启动容器
 
-   下面的命令中的mysql,为了持久化配置
+   1. 持久化配置：
+
+      创建nacos数据库并且执行建表语句:nacos-server-1.4.2\nacos\conf\nacos-mysql.sql
+
+   2. 执行命令启动容器
 
    ```
    docker run -d \
    -e MODE=standalone \
    -e SPRING_DATASOURCE_PLATFORM=mysql \
-   -e MYSQL_SERVICE_HOST=121.5.143.40 \
+   -e MYSQL_SERVICE_HOST=124.223.106.150 \
    -e MYSQL_SERVICE_PORT=3306 \
    -e MYSQL_SERVICE_USER='root' \
    -e MYSQL_SERVICE_PASSWORD='123456' \
@@ -388,6 +404,7 @@ sudo systemctl restart docker
    -p 8848:8848 \
    --name nacos \
    --restart=always \
+   --privileged=true \
    nacos/nacos-server:1.4.2
    ```
 
@@ -455,7 +472,7 @@ sudo systemctl restart docker
    - registry.conf
 
      ```
-     touch /usr/local/seata/conf/file.conf
+     touch /usr/local/seata/conf/registry.conf
      ```
 
      复制以下内容，设置seata的服务注册，配置中心的配置
@@ -689,21 +706,22 @@ sudo systemctl restart docker
      ```
      # 106.15.38.88 为nacos的服务器地址
      # -t 为命名空间
-     bash nacos-config.sh -h 121.5.143.40 -p 8848 -g STATA_GROPU -t b9abfd2a-d894-4127-bbf5-136e081aec1f -u nacos -w nacos
+     sh nacos-config.sh -h 124.223.106.150 -p 8848 -g STATA_GROPU -t 7a433307-8a38-4826-b6ba-1f4e9a73a31c -u nacos -w nacos
      ```
 
 5. 创建并启动容器
 
    ```
    docker run -d \
-   -p 8091:8091 \
    -v /usr/local/seata/conf/registry.conf:/seata-server/resources/registry.conf \
    -v /usr/local/seata/conf/file.conf:/seata-server/resources/file.conf \
    -v /usr/local/seata/conf/logs:/root/logs \
    -e SEATA_IP=121.5.143.40 \
    -e SEATA_PORT=8091 \
+   -p 8091:8091 \
    --name seata \
    --restart=always \
+   --privileged=true \
    seataio/seata-server:1.3.0
    ```
 
@@ -730,6 +748,7 @@ sudo systemctl restart docker
    -p 8858:8858 \
    --name sentinel \
    --restart=always \
+   --privileged=true \
    bladex/sentinel-dashboard:latest
    ```
 
@@ -739,5 +758,148 @@ sudo systemctl restart docker
    docker update sentinel --restart=always
    ```
 
+#### 2.10 docker安装RocketMQ
 
+1. 创建namesrv服务
 
+   1. 下载镜像
+
+      ```
+      docker pull rocketmqinc/rocketmq:4.4.0
+      ```
+
+   2. 创建挂载目录
+
+      ```
+      mkdir -p /usr/local/rocketmq/data/namesrv/logs   
+      mkdir -p /usr/local/rocketmq/data/namesrv/store       
+      ```
+
+   3. 创建并启动容器
+
+      ```
+      docker run -d \
+      -v /usr/local/rocketmq/data/namesrv/logs:/root/logs \
+      -v /usr/local/rocketmq/data/namesrv/store:/root/store \
+      -e "MAX_POSSIBLE_HEAP=100000000" \
+      -p 9876:9876 \
+      --restart=always \
+      --name rmqnamesrv \
+      rocketmqinc/rocketmq:4.4.0 \
+      sh mqnamesrv 
+      ```
+
+      配置说明
+
+      ```
+      -d										->  以守护进程的方式启动
+      --restart=always						->  docker重启时候容器自动重启
+      --name rmqnamesrv						->	把容器的名字设置为rmqnamesrv
+      -p 9876:9876							->  把容器内的端口9876挂载到宿主机9876上面
+      -v /usr/local/rocketmq/data/namesrv/logs:/root/logs	把容器内的/root/logs日志目录挂载到宿主机的 /usr/local/rocketmq/data/namesrv/logs目录
+      -v /usr/local/rocketmq/data/namesrv/store:/root/store	把容器内的/root/store数据存储目录挂载到宿主机的 /usr/local/rocketmq/data/namesrv目录
+      --name rmqnamesrv						->	容器的名字
+      -e "MAX_POSSIBLE_HEAP=10000000"			->	设置容器的最大堆内存为100000000
+      rocketmqinc/rocketmq:4.4.0				->	使用的镜像名称
+      sh mqnamesrv							->	启动namesrv服务
+      ```
+
+2. 创建broker节点
+
+   1. 创建挂载目录
+
+      ```
+      mkdir -p /usr/local/rocketmq/data/broker/logs  
+      mkdir -p /usr/local/rocketmq/data/broker/store
+      mkdir -p /usr/local/rocketmq/conf
+      ```
+
+   2. 创建配置文件 broker.conf
+
+      ```
+      vi /usr/local/rocketmq/conf/broker.conf
+      # 所属集群名称，如果节点较多可以配置多个
+      brokerClusterName = DefaultCluster
+      #broker名称，master和slave使用相同的名称，表明他们的主从关系
+      brokerName = broker-a
+      #0表示Master，大于0表示不同的slave
+      brokerId = 0
+      #表示几点做消息删除动作，默认是凌晨4点
+      deleteWhen = 04
+      #在磁盘上保留消息的时长，单位是小时
+      fileReservedTime = 48
+      #有三个值：SYNC_MASTER，ASYNC_MASTER，SLAVE；同步和异步表示Master和Slave之间同步数据的机制；
+      brokerRole = ASYNC_MASTER
+      #刷盘策略，取值为：ASYNC_FLUSH，SYNC_FLUSH表示同步刷盘和异步刷盘；SYNC_FLUSH消息写入磁盘后才返回成功状态，ASYNC_FLUSH不需要；
+      flushDiskType = ASYNC_FLUSH
+      # 设置broker节点所在服务器的ip地址
+      brokerIP1 = 192.168.52.136
+      ```
+
+   3. 创建并启动容器
+
+      ```
+      docker run -d  \
+      --restart=always \
+      --name rmqbroker \
+      --link rmqnamesrv:namesrv \
+      -p 10911:10911 \
+      -p 10909:10909 \
+      -v /usr/local/rocketmq/data/broker/logs:/root/logs \
+      -v /usr/local/rocketmq/data/broker/store:/root/store \
+      -v /usr/local/rocketmq/conf/broker.conf:/opt/rocketmq-4.4.0/conf/broker.conf \
+      -e "NAMESRV_ADDR=namesrv:9876" \
+      -e "MAX_POSSIBLE_HEAP=200000000" \
+      rocketmqinc/rocketmq \
+      sh mqbroker -c /opt/rocketmq-4.4.0/conf/broker.conf 
+      ```
+
+      配置说明
+
+      ```
+      -d									->	以守护进程的方式启动
+      –restart=always						->	docker重启时候镜像自动重启
+      --name rmqbroker					->	把容器的名字设置为rmqbroker
+      ---link rmqnamesrv:namesrv			->	和rmqnamesrv容器通信
+      -p 10911:10911						->	把容器的非vip通道端口挂载到宿主机
+      -p 10909:10909						->	把容器的vip通道端口挂载到宿主机
+      -e "NAMESRV_ADDR=namesrv:9876"		->	指定namesrv的地址为本机namesrv的ip地址:9876
+      -e "MAX_POSSIBLE_HEAP=200000000" rocketmqinc/rocketmq sh mqbroker	->	指定broker服务的最大堆内存
+      rocketmqinc/rocketmq				->	使用的镜像名称
+      sh mqbroker -c /opt/rocketmq-4.4.0/conf/broker.conf					->指定配置文件启动broker节点
+      ```
+
+3. 创建rockermq-console服务
+
+   1. 下载镜像
+
+      ```
+      docker pull pangliang/rocketmq-console-ng
+      ```
+
+   2. 创建并启动容器
+
+      ```
+      docker run -d \
+      --restart=always \
+      --name rmqadmin \
+      -e "JAVA_OPTS=-Drocketmq.namesrv.addr=192.168.52.136:9876 \
+      -Dcom.rocketmq.sendMessageWithVIPChannel=false" \
+      -p 9999:8080 \
+      pangliang/rocketmq-console-ng
+      ```
+
+      配置说明
+
+      ```
+      -d														->	以守护进程的方式启动
+      --restart=always										->	docker重启时候镜像自动重启
+      --name rmqadmin	把容器的名字设置为rmqadmin
+      -e "JAVA_OPTS=-Drocketmq.namesrv.addr=192.168.52.136:9876 -> 设置namesrv服务的ip地址
+      -Dcom.rocketmq.sendMessageWithVIPChannel=false"			  ->	不使用vip通道发送消息
+      –p 9999:8080							->	把容器内的端口8080挂载到宿主机上的9999端口
+      ```
+
+      
+
+   
