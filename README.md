@@ -785,12 +785,13 @@ sudo systemctl restart docker
       -p 9876:9876 \
       --restart=always \
       --name rmqnamesrv \
+      --privileged=true \
       rocketmqinc/rocketmq:4.4.0 \
       sh mqnamesrv 
       ```
-
+      
       配置说明
-
+      
       ```
       -d										->  以守护进程的方式启动
       --restart=always						->  docker重启时候容器自动重启
@@ -833,16 +834,13 @@ sudo systemctl restart docker
       #刷盘策略，取值为：ASYNC_FLUSH，SYNC_FLUSH表示同步刷盘和异步刷盘；SYNC_FLUSH消息写入磁盘后才返回成功状态，ASYNC_FLUSH不需要；
       flushDiskType = ASYNC_FLUSH
       # 设置broker节点所在服务器的ip地址
-      brokerIP1 = 192.168.52.136
+      brokerIP1 = 124.223.106.150
       ```
 
    3. 创建并启动容器
 
       ```
       docker run -d  \
-      --restart=always \
-      --name rmqbroker \
-      --link rmqnamesrv:namesrv \
       -p 10911:10911 \
       -p 10909:10909 \
       -v /usr/local/rocketmq/data/broker/logs:/root/logs \
@@ -850,12 +848,16 @@ sudo systemctl restart docker
       -v /usr/local/rocketmq/conf/broker.conf:/opt/rocketmq-4.4.0/conf/broker.conf \
       -e "NAMESRV_ADDR=namesrv:9876" \
       -e "MAX_POSSIBLE_HEAP=200000000" \
-      rocketmqinc/rocketmq \
-      sh mqbroker -c /opt/rocketmq-4.4.0/conf/broker.conf 
+      --restart=always \
+      --privileged=true \
+      --name rmqbroker \
+      --link rmqnamesrv:namesrv \
+      rocketmqinc/rocketmq:4.4.0 \
+      sh mqbroker -c /opt/rocketmq-4.4.0/conf/broker.conf
       ```
-
+      
       配置说明
-
+      
       ```
       -d									->	以守护进程的方式启动
       –restart=always						->	docker重启时候镜像自动重启
@@ -883,7 +885,7 @@ sudo systemctl restart docker
       docker run -d \
       --restart=always \
       --name rmqadmin \
-      -e "JAVA_OPTS=-Drocketmq.namesrv.addr=192.168.52.136:9876 \
+      -e "JAVA_OPTS=-Drocketmq.namesrv.addr=124.223.106.150:9876 \
       -Dcom.rocketmq.sendMessageWithVIPChannel=false" \
       -p 9999:8080 \
       pangliang/rocketmq-console-ng
