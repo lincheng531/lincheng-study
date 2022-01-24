@@ -84,10 +84,10 @@ spring:
               enable: true
               #是否使用同步得方式发送消息。默认值: false
               sync: false
-    #alibaba:
-      #seata:
+    alibaba:
+      seata:
         #配置事务分组，service.vgroupMapping.my_test_tx_group=default。要保持一致性。
-        #tx-service-group: my_test_tx_group
+        tx-service-group: my_test_tx_group
     sentinel:
       transport:
         dashboard: http://124.223.106.150:8858
@@ -107,7 +107,7 @@ spring:
             #data-type: json
             rule-type: flow
 #seata配置
-#seata:
+seata:
   registry:
     #配置seata的注册中心
     type: nacos
@@ -136,6 +136,8 @@ spring:
       group: SEATA_GROUP
       #命名空间
       namespace: 7a433307-8a38-4826-b6ba-1f4e9a73a31c
+  tx-service-group: my_test_tx_group
+
 
 
 
