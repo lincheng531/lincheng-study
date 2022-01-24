@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lincheng.study.mapper.SysCacheKeyMapper">
+
+
+    <select id="queryConfigureCache" parameterType="com.lincheng.study.domain.product.ConfigureCacheVO"
+            resultType="com.lincheng.study.domain.product.ConfigureCacheVO">
+        select
+            a.param_id,
+            a.business_code,
+            a.sub_code,
+            a.param_value,
+            b.key_code,
+            b.key_value,
+            b.sequence
+        from
+            sys_cache_key a,
+            sys_cache_value b
+        <where>
+            a.param_id = b.param_id
+            <if test="businessCode != '' and businessCode != null">
+                and a.business_code = #{businessCode}
+            </if>
+        </where>
+        order by business_code,sub_code,sequence
+    </select>
+</mapper>
