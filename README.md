@@ -706,7 +706,7 @@ sudo systemctl restart docker
      ```
      # 106.15.38.88 为nacos的服务器地址
      # -t 为命名空间
-     sh nacos-config.sh -h 124.223.106.150 -p 8848 -g STATA_GROPU -t 7a433307-8a38-4826-b6ba-1f4e9a73a31c -u nacos -w nacos
+     sh nacos-config.sh -h 124.223.106.150 -p 8848 -g SEATA_GROUP -t 7a433307-8a38-4826-b6ba-1f4e9a73a31c -u nacos -w nacos
      ```
 
 5. 创建并启动容器
