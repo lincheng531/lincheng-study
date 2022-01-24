@@ -24,7 +24,7 @@ public class GeneratorApplication {
         //tables.add("p_answer");
         //tables.add("p_correct");
 
-        FastAutoGenerator.create("jdbc:mysql://127.0.0.1:3306/consumer?useUnicode=yes&characterEncoding=UTF-8&useSSL=false&serverTimezone=Asia/Shanghai","root","123456")
+        FastAutoGenerator.create("jdbc:mysql://124.223.106.150:3306/consumer?useUnicode=yes&characterEncoding=UTF-8&useSSL=false&serverTimezone=Asia/Shanghai","root","123456")
                 .globalConfig(builder -> {
                     builder.author("linCheng")//作者
                             .outputDir(System.getProperty("user.dir")+"\\study-cloud-alibaba-consumer\\src\\main\\java")//指定输出目录(写到java目录)

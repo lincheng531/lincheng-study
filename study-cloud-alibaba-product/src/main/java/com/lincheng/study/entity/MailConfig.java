@@ -22,7 +22,7 @@ import lombok.Setter;
 @TableName("sys_mail_config")
 public class MailConfig extends Model<MailConfig> {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -169939614347109643L;
 
     @TableId(value = "mail_config_id", type = IdType.AUTO)
     private Long mailConfigId;

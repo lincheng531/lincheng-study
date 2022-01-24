@@ -7,12 +7,12 @@ spring:
   cloud:
     nacos:
       discovery:
-        server-addr: http://localhost:8848
+        server-addr: http://124.223.106.150:8848
         register-enabled: true
     #sentinel配置
     sentinel:
       transport:
-        dashboard: http://localhost:8858
+        dashboard: http://124.223.106.150:8858
       #scg:
         #fallback:
           #mode: response

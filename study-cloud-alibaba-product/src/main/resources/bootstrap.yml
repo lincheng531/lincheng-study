@@ -9,7 +9,7 @@ spring:
   datasource:
     username: root
     password: 123456
-    url: jdbc:mysql://127.0.0.1:3306/product?useUnicode=yes&characterEncoding=UTF-8&useSSL=false&serverTimezone=Asia/Shanghai
+    url: jdbc:mysql://124.223.106.150:3306/product?useUnicode=yes&characterEncoding=UTF-8&useSSL=false&serverTimezone=Asia/Shanghai
     driver-class-name: com.mysql.cj.jdbc.Driver
   mail:
     #邮件协议smtp
@@ -21,7 +21,7 @@ spring:
     #移动端客户授权码(在邮箱中设置)
     password: gvkpgdixvuiudfhf
   redis:
-    host: 127.0.0.1
+    host: 124.223.106.150
     port: 6379
     #password:
     jedis:
@@ -43,14 +43,14 @@ spring:
     nacos:
       discovery:
         #nacos 注册中心地址
-        server-addr: http://localhost:8848
+        server-addr: http://124.223.106.150:8848
         #注册到哪个命名空间中
         #namespace: 3e81c560-3c91-484f-bb67-c1a4e01ce688
         #不注册到注册中心(默认注册)
         register-enabled: true
       config:
         #nacos 配置中心地址
-        server-addr: http://localhost:8848
+        server-addr: http://124.223.106.150:8848
         #是否开启监听和自动刷新
         refresh-enabled: true
         #告诉从哪个命名空间获取配置
@@ -76,7 +76,7 @@ spring:
         output: {destination: study-rocketMQ-topic, content-type: application/json}
       rocketmq:
         binder:
-          name-server: localhost:9876
+          name-server: 124.223.106.150:9876
         bindings:
           output:
             producer:
@@ -84,13 +84,13 @@ spring:
               enable: true
               #是否使用同步得方式发送消息。默认值: false
               sync: false
-    alibaba:
-      seata:
+    #alibaba:
+      #seata:
         #配置事务分组，service.vgroupMapping.my_test_tx_group=default。要保持一致性。
-        tx-service-group: my_test_tx_group
+        #tx-service-group: my_test_tx_group
     sentinel:
       transport:
-        dashboard: http://localhost:8858
+        dashboard: http://124.223.106.150:8858
       #默认将调用链路收敛
       web-context-unify: false
       #持久化配置
@@ -98,7 +98,7 @@ spring:
         #自定义
         sentinel-app:
           nacos:
-            server-addr: http://localhost:8848
+            server-addr: http://124.223.106.150:8848
             username: nacos
             password: nacos
             dataId: sentinel-application
@@ -107,13 +107,13 @@ spring:
             #data-type: json
             rule-type: flow
 #seata配置
-seata:
+#seata:
   registry:
     #配置seata的注册中心
     type: nacos
     nacos:
       #服务地址
-      server-addr: http://localhost:8848
+      server-addr: http://124.223.106.150:8848
       #服务名称
       application: seata-server
       #分组名称
@@ -127,7 +127,7 @@ seata:
     type: nacos
     nacos:
       #服务地址
-      server-addr: http://localhost:8848
+      server-addr: http://124.223.106.150:8848
       #用户
       username: nacos
       #密码
@@ -135,7 +135,7 @@ seata:
       #分组
       group: SEATA_GROUP
       #命名空间
-      #namespace: b34fc235-df78-430b-945d-e46a5efa0ae8
+      namespace: 7a433307-8a38-4826-b6ba-1f4e9a73a31c
 
 
 
@@ -147,7 +147,7 @@ dubbo:
     metadata-type: local
   registry:
     # 注册中心与注册地址
-    address: spring-cloud://127.0.0.1:8848
+    address: spring-cloud://124.223.106.150:8848
     #不将注册中心用于配置中心
     use-as-config-center: false
     #是否允许注册

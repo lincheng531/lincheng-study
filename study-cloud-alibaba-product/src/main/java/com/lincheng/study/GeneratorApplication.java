@@ -19,12 +19,12 @@ public class GeneratorApplication {
     public static void main(String[] args) {
 
         List<String> tables = new ArrayList<>();
-        tables.add("seata_product");
-        //tables.add("p_question");
+        tables.add("sys_cache_value");
+        tables.add("sys_cache_key");
         //tables.add("p_answer");
         //tables.add("p_correct");
 
-        FastAutoGenerator.create("jdbc:mysql://127.0.0.1:3306/product?useUnicode=yes&characterEncoding=UTF-8&useSSL=false&serverTimezone=Asia/Shanghai","root","123456")
+        FastAutoGenerator.create("jdbc:mysql://124.223.106.150:3306/product?useUnicode=yes&characterEncoding=UTF-8&useSSL=false&serverTimezone=Asia/Shanghai","root","123456")
                 .globalConfig(builder -> {
                     builder.author("linCheng")//作者
                             .outputDir(System.getProperty("user.dir")+"\\study-cloud-alibaba-product\\src\\main\\java")//指定输出目录(写到java目录)
@@ -52,6 +52,7 @@ public class GeneratorApplication {
                             .formatServiceImplFileName("%sServiceImpl")//sServiceImpl类名，%s适配，根据表名替换
                             .entityBuilder()
                             .enableActiveRecord()//
+                            .formatFileName("%sEntity")
                             .enableLombok()//开启lombok
                             //.logicDeleteColumnName("STATE")//说明逻辑删除是哪个字段
                             .enableTableFieldAnnotation()//属性加上,说明注解
