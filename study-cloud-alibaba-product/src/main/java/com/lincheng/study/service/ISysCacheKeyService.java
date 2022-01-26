@@ -22,4 +22,6 @@ public interface ISysCacheKeyService extends IService<SysCacheKeyEntity> {
     Map<String, List<ConfigureCacheVO>> getConfigureCacheByBusinessCodeAndSubCode(String businessCode,String subCode);
 
     String getConfigureCacheValue(String businessCode,String subCode,String keyCode);
+
+    String getConfigureCacheParamValue(String businessCode,String subCode);
 }

@@ -32,15 +32,24 @@ public class SysCacheKeyController {
 
 
     @RequestMapping("/getCacheByBusinessCodeAndSubcode")
-    public Object getCacheByBusinessCodeAndSubcode(@RequestParam("businessCode") String businessCode, @RequestParam("subCode") String subCode) {
+    public Object getCacheByBusinessCodeAndSubcode(@RequestParam("businessCode") String businessCode,
+                                                   @RequestParam("subCode") String subCode) {
         return sysCacheKeyService.getConfigureCacheByBusinessCodeAndSubCode(businessCode, subCode);
     }
 
 
     @RequestMapping("/getConfigureCacheValue")
     public Object getConfigureCacheValue(@RequestParam("businessCode") String businessCode,
-                                                   @RequestParam("subCode") String subCode,
-                                                   @RequestParam("keyCode") String keyCode) {
-        return sysCacheKeyService.getConfigureCacheValue(businessCode, subCode,keyCode);
+                                         @RequestParam("subCode") String subCode,
+                                         @RequestParam("keyCode") String keyCode) {
+        return sysCacheKeyService.getConfigureCacheValue(businessCode, subCode, keyCode);
     }
+
+
+    @RequestMapping("/getConfigureCacheParamValue")
+    public Object getConfigureCacheParamValue(@RequestParam("businessCode") String businessCode,
+                                              @RequestParam("subCode") String subCode) {
+        return sysCacheKeyService.getConfigureCacheParamValue(businessCode, subCode);
+    }
+
 }

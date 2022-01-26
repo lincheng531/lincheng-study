@@ -1,6 +1,7 @@
 package com.lincheng.study.service.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.lincheng.study.domain.product.ConfigureCacheVO;
 import com.lincheng.study.entity.SysCacheKeyEntity;
 import com.lincheng.study.mapper.SysCacheKeyMapper;
@@ -13,9 +14,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -75,8 +74,17 @@ public class SysCacheKeyServiceImpl extends ServiceImpl<SysCacheKeyMapper, SysCa
     }
 
 
+    @Override
+    @Cacheable(key = " 'businessCode:' + #businessCode +  ':subCode:' + #subCode")
+    public String getConfigureCacheParamValue(String businessCode,String subCode){
 
+        QueryWrapper<SysCacheKeyEntity> queryWrapper = new QueryWrapper();
+        queryWrapper.eq("business_code",businessCode);
+        queryWrapper.eq("sub_code",subCode);
+        SysCacheKeyEntity sysCacheKeyEntity = sysCacheKeyMapper.selectOne(queryWrapper);
 
+        return  Optional.ofNullable(sysCacheKeyEntity).map(value -> sysCacheKeyEntity.getParamValue()).orElse(null);
+    }
 
 
 
