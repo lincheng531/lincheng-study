@@ -41,6 +41,11 @@ public class ConfigureCacheVO implements Serializable {
     private String keyCode;
 
     /**
+     * 值编码
+     */
+    private String keyValue;
+
+    /**
      * 参数值
      */
     private String paramValue;
@@ -59,12 +64,6 @@ public class ConfigureCacheVO implements Serializable {
      * 创建时间
      */
     private Timestamp createTime;
-
-
-    /**
-     * 值编码
-     */
-    private String keyValue;
 
     /**
      * 顺序

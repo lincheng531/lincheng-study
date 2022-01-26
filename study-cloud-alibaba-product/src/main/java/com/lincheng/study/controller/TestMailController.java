@@ -1,6 +1,7 @@
 package com.lincheng.study.controller;
 
 import com.lincheng.study.entity.MailConfig;
+import com.lincheng.study.service.IMailConfigService;
 import com.lincheng.study.service.impl.MailConfigServiceImpl;
 import com.lincheng.study.utils.EmailUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,7 +20,7 @@ import java.util.Arrays;
 public class TestMailController {
 
     @Resource
-    private MailConfigServiceImpl mailConfigService;
+    private IMailConfigService mailConfigService;
 
     @RequestMapping("/testSendMail")
     public Object testSendMail() {

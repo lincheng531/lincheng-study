@@ -27,7 +27,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(value = BusinessException.class)
     @ResponseBody
-    public ResultBody bizExceptionHandler( BusinessException e) {
+    public ResultBody bizExceptionHandler(BusinessException e) {
         log.error("发生业务异常！原因是：{}", e.getErrorMsg());
         return ResultBody.error(e.getErrorCode(), e.getErrorMsg());
     }
@@ -40,7 +40,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(value = NullPointerException.class)
     @ResponseBody
-    public ResultBody exceptionHandler( NullPointerException e) {
+    public ResultBody exceptionHandler(NullPointerException e) {
         log.error("发生空指针异常！原因是:", e);
         return ResultBody.error(BaseErrorEnum.BODY_NOT_MATCH);
     }
@@ -53,7 +53,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(value = Exception.class)
     @ResponseBody
-    public ResultBody exceptionHandler( Exception e) {
+    public ResultBody exceptionHandler(Exception e) {
         log.error("未知异常！原因是:", e);
         return ResultBody.error(BaseErrorEnum.INTERNAL_SERVER_ERROR);
     }

@@ -18,8 +18,16 @@
             sys_cache_value b
         <where>
             a.param_id = b.param_id
+            and a.state = '1'
+            and b.state = '1'
             <if test="businessCode != '' and businessCode != null">
                 and a.business_code = #{businessCode}
+            </if>
+            <if test="subCode != '' and subCode != null">
+                and a.sub_code = #{subCode}
+            </if>
+             <if test="keyCode != '' and keyCode != null">
+                and b.key_code = #{keyCode}
             </if>
         </where>
         order by business_code,sub_code,sequence
