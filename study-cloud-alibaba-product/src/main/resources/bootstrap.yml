@@ -136,7 +136,6 @@ seata:
       group: SEATA_GROUP
       #命名空间
       namespace: 7a433307-8a38-4826-b6ba-1f4e9a73a31c
-  tx-service-group: my_test_tx_group
 
 
 

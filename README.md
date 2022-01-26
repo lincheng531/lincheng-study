@@ -454,7 +454,7 @@ sudo systemctl restart docker
          datasource = "druid"
          dbType = "mysql"
          driverClassName = "com.mysql.cj.jdbc.Driver"
-         url = "jdbc:mysql://121.5.143.40:3306/seata"
+         url = "jdbc:mysql://124.223.106.150:3306/seata"
          user = "root"
          password = "123456"
          minConn = 5
@@ -484,7 +484,7 @@ sudo systemctl restart docker
      
        nacos {
          application = "seata-server"
-         serverAddr = "121.5.143.40:8848"
+         serverAddr = "124.223.106.150:8848"
          group = "SEATA_GROUP"
          namespace = ""
          cluster = "default"
@@ -499,7 +499,7 @@ sudo systemctl restart docker
        type = "nacos"
      
        nacos {
-         serverAddr = "121.5.143.40:8848"
+         serverAddr = "124.223.106.150:8848"
          namespace = "b9abfd2a-d894-4127-bbf5-136e081aec1f"
          group = "SEATA_GROUP"
          username = "nacos"
@@ -536,7 +536,7 @@ sudo systemctl restart docker
      transport.threadFactory.workerThreadSize=default
      transport.shutdown.wait=3
      service.vgroupMapping.my_test_tx_group=default
-     service.default.grouplist=121.5.143.40:8091
+     service.default.grouplist=124.223.106.150:8091
      service.enableDegrade=false
      service.disableGlobalTransaction=false
      client.rm.asyncCommitBufferLimit=10000
@@ -557,7 +557,7 @@ sudo systemctl restart docker
      store.db.datasource=druid
      store.db.dbType=mysql
      store.db.driverClassName=com.mysql.cj.jdbc.Driver
-     store.db.url=jdbc:mysql://121.5.143.40:3306/seata?useUnicode=true
+     store.db.url=jdbc:mysql://124.223.106.150:3306/seata?useUnicode=true
      store.db.user=root
      store.db.password=123456
      store.db.minConn=5
@@ -716,7 +716,7 @@ sudo systemctl restart docker
    -v /usr/local/seata/conf/registry.conf:/seata-server/resources/registry.conf \
    -v /usr/local/seata/conf/file.conf:/seata-server/resources/file.conf \
    -v /usr/local/seata/conf/logs:/root/logs \
-   -e SEATA_IP=121.5.143.40 \
+   -e SEATA_IP=124.223.106.150 \
    -e SEATA_PORT=8091 \
    -p 8091:8091 \
    --name seata \
@@ -758,7 +758,7 @@ sudo systemctl restart docker
    docker update sentinel --restart=always
    ```
 
-#### 2.10 docker安装RocketMQ
+#### 2.10 docker安装rocketMQ
 
 1. 创建namesrv服务
 
