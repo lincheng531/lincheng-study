@@ -78,7 +78,7 @@ public class SysCacheKeyServiceImpl extends ServiceImpl<SysCacheKeyMapper, SysCa
     @Cacheable(key = "'paramValue' + ':businessCode:' + #businessCode +  ':subCode:' + #subCode")
     public String getConfigureCacheParamValue(String businessCode,String subCode){
 
-        QueryWrapper<SysCacheKeyEntity> queryWrapper = new QueryWrapper();
+        QueryWrapper<SysCacheKeyEntity> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("business_code",businessCode);
         queryWrapper.eq("sub_code",subCode);
         SysCacheKeyEntity sysCacheKeyEntity = sysCacheKeyMapper.selectOne(queryWrapper);
