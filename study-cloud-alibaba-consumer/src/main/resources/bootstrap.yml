@@ -148,7 +148,7 @@ seata:
       #分组
       group: SEATA_GROUP
       #命名空间
-      #namespace: b34fc235-df78-430b-945d-e46a5efa0ae8
+      namespace: 7a433307-8a38-4826-b6ba-1f4e9a73a31c
 
 dubbo:
   application:
