@@ -902,6 +902,34 @@ sudo systemctl restart docker
       –p 9999:8080							->	把容器内的端口8080挂载到宿主机上的9999端口
       ```
 
-      
+#### 2.11 docker安装zipkin
+
+1. 下载镜像
+
+   ```
+   docker pull openzipkin/zipkin
+   ```
+
+2. 运行镜像
+
+   ```
+   docker run -d \
+   -p 9411:9411 \
+   --restart always \
+   --name zipkin \
+   --privileged=true \
+   openzipkin/zipkin
+   ```
+
+3. 访问
+
+   ```
+   http://124.223.106.150:9411/zipkin/
+   ```
 
    
+
+   
+
+
+
