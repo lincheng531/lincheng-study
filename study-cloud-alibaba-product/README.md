@@ -1011,3 +1011,56 @@ dubbo:
                response-body: "{'resultCode':'901','resultMsg':'接口限流了gateway-yml'}
      ```
 
+## 八、链路追踪（zipkin）
+
+1. 添加依赖
+
+   ```xml
+           <dependency>
+               <groupId>org.springframework.cloud</groupId>
+               <artifactId>spring-cloud-starter-zipkin</artifactId>
+           </dependency>
+   ```
+
+2. 添加配置
+
+   ```yaml
+   spring:
+     zipkin:
+       #zipkin服务地址
+       base-url: http://124.223.106.150:9411/
+       #关闭服务发现，否则spring cloud 会把zipkin的url当做服务名称
+       sender:
+         #设置http的方式传输数据
+         type: web
+     sleuth:
+       sampler:
+         #设置抽样采集率为100%; 默认为0.1,即10%
+         probability: 1
+   ```
+
+3. 整合dubbo
+
+   [整合-官方文档](https://docs.spring.io/spring-cloud-sleuth/docs/current/reference/html/integrations.html#sleuth-rpc-dubbo-integration) 
+
+   - 添加依赖
+
+     ```xml
+     		<dependency>
+                 <groupId>io.zipkin.brave</groupId>
+                 <artifactId>brave-instrumentation-dubbo</artifactId>
+             </dependency>
+     ```
+
+   - dubbo.properties添加过滤器
+
+     ```yaml
+     dubbo:
+       consumer:
+         #过滤为追踪
+         filter: 'tracing'
+       provider:
+         #过滤为追踪
+         filter: 'tracing'  
+     ```
+

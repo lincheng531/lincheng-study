@@ -104,7 +104,11 @@
             <artifactId>spring-cloud-starter-zipkin</artifactId>
         </dependency>
 
-        <!--链路追踪 可视化 -->
+        <!--链路追踪 dubbo -->
+        <dependency>
+            <groupId>io.zipkin.brave</groupId>
+            <artifactId>brave-instrumentation-dubbo</artifactId>
+        </dependency>
 
         <!--
             redisson
