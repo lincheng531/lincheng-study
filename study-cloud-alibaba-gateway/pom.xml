@@ -11,9 +11,9 @@
 
     <packaging>jar</packaging>
 
-    <artifactId>study-cloud-alibaba-gatewya</artifactId>
+    <artifactId>study-cloud-alibaba-gateway</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>study-cloud-alibaba-gatewya</name>
+    <name>study-cloud-alibaba-gateway</name>
 
     <description>网关</description>
 
