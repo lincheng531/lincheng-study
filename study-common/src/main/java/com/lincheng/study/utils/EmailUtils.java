@@ -36,7 +36,7 @@ public class EmailUtils {
 
 
     /**
-     * @Description:
+     * @Description: springBoot配合化发送email
      * @author: linCheng
      * @Date: 2022/1/7 11:38
      * @param: fromEmail 发送者
@@ -91,6 +91,21 @@ public class EmailUtils {
     }
 
 
+    /**
+     * @Description:
+     * @author: linCheng
+     * @Date: 2022/3/23 10:43
+     * @param: fromEmail 发送者
+     * @param: toUser 接收者
+     * @param: subject 主题
+     * @param: content 内容
+     * @param: files 附件
+     * @param: host 服务地址 smtp.qq.com
+     * @param: encoding 编码 UTF-8
+     * @param: username 用户名 2826117968@qq.com
+     * @param: password 密码（授权码）gvkpgdixvuiudfhf
+     * @Return: java.lang.Boolean
+     */
     public static Boolean sendMail(String fromEmail,
                                    List<String> toUser,
                                    String subject,
