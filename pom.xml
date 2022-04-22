@@ -24,6 +24,7 @@
         <module>study-cloud-alibaba-product</module>
         <module>study-cloud-alibaba-consumer</module>
         <module>study-cloud-alibaba-gateway</module>
+        <module>study-auth</module>
     </modules>
 
     <properties>
