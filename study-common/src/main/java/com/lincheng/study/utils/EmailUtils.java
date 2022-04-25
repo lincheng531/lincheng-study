@@ -21,7 +21,7 @@ import java.util.Properties;
  * @author: linCheng
  * @create: 2022-01-07 11:30
  **/
-@Component
+//@Component
 public class EmailUtils {
 
     private static JavaMailSender javaMailSender;

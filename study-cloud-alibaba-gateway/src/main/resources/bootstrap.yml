@@ -4,6 +4,22 @@ server:
 spring:
   application:
     name: study-cloud-alibaba-gateway
+  redis:
+    host: 124.223.106.150
+    port: 6379
+    #password:
+    jedis:
+      pool:
+        # 连接池最大连接数（使用负值表示没有限制）
+        max-active: 20
+        # 连接池最大阻塞等待时间（使用负值表示没有限制）
+        max-wait: -1
+        # 连接池中的最大空闲连接
+        max-idle: 10
+        # 连接池中的最小空闲连接
+        min-idle: 0
+    # 连接超时时间（毫秒）
+    timeout: 1000
   cloud:
     nacos:
       discovery:
@@ -25,6 +41,12 @@ spring:
           #enabled: true
       #路由规则
       routes:
+        - id: study-auth
+          uri: lb://study-auth
+          predicates:
+            - Path=/study-auth/**
+          filters:
+            - StripPrefix=1
           # 路由的唯一标识
         - id: study-cloud-alibaba-product
           # 需要转发的地址
@@ -32,7 +54,7 @@ spring:
           uri: lb://study-cloud-alibaba-product
           # 断言规则（用于路由规则的匹配）Predicate 为了实现一组匹配规则，方便让请求过来找到对应的 Route 进行处理
           predicates:
-            - Path=/study-cloud-alibaba-product/**
+            - Path=/api/**
             # 当前时间在设置的时间之后，才会转发，在这之前不进行转发
             #- After=2021-01-20T06:06:06+08:00[Asia/Shanghai]
             # 当前时间在设置的时间之前，才会转发，在这之前不进行转发
@@ -44,6 +66,18 @@ spring:
           filters:
             #转发前去除第一层路径
             - StripPrefix=1
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: 'http://localhost:8000/rsa/publicKey' #配置RSA的公钥访问地址
 
+secure:
+  ignore:
+    urls: #配置白名单路径
+      - "/actuator/**"
+      - "/study-auth/oauth/token"
+      - "/auth/oauth/token"
+      - "/oauth/token"
 
 

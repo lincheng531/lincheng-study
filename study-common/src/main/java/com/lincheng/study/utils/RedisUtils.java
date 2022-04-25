@@ -381,7 +381,7 @@ public class RedisUtils {
     }
 
 
-    public boolean hmset(String key, Object object) {
+    private boolean hmset(String key, Object object) {
         try {
             String s = JSON.toJSONString(object);
             Map map = JSONObject.parseObject(s, Map.class);
